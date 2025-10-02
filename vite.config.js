@@ -5,8 +5,7 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   define: {
-    // Inject NASA API key for dev build (can be overridden by .env)
-    'import.meta.env.VITE_NASA_API_KEY': JSON.stringify('Lfarxv8KlKxfthMk26VjKhSLCKyVRYaTV7BOCZa8'),
+    // NASA API key should be set in .env file as VITE_NASA_API_KEY
   },
   server: {
     proxy: {

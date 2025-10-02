@@ -1,7 +1,6 @@
 // NASA API integration for authentic space weather data
 
-const runtimeKey = typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_NASA_API_KEY;
-const NASA_API_KEY = runtimeKey || 'Lfarxv8KlKxfthMk26VjKhSLCKyVRYaTV7BOCZa8';
+const NASA_API_KEY = typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_NASA_API_KEY;
 
 // Use Vite dev proxy locally to avoid CORS
 const isDev = typeof window !== 'undefined' && window.location && window.location.hostname === 'localhost';
