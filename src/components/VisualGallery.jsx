@@ -89,7 +89,7 @@ const VisualGallery = ({ query = 'aurora', perPage = 8 }) => {
     try {
       const [a, lib] = await Promise.all([
         apod ? Promise.resolve(apod) : nasaAPI.getAPOD({ cacheMinutes: 60 }),
-        nasaAPI.searchImages({ q: topic, page: p, cacheMinutes: 10 })
+        nasaAPI.searchImages({ q: topic, page: p, cacheMinutes: 60 })
       ]);
       setApod(a);
       const items = (lib?.collection?.items || []).slice(0, perPage).map((it) => {
@@ -128,8 +128,13 @@ const VisualGallery = ({ query = 'aurora', perPage = 8 }) => {
       </div>
       <div className="mb-3 p-3 bg-space-card/50 rounded-xl border border-accent-purple/20">
         <div className="text-sm text-text-light/90">
-          Explore short, kid‑friendly visuals about space weather. Tap topics below to see images and clips from NASA’s Images Library. Each card shows a picture, a brief explanation, and a link to learn more.
+          Explore short, kid‑friendly visuals about space weather. Tap topics below to see images and clips from NASA's Images Library. Each card shows a picture, a brief explanation, and a link to learn more.
         </div>
+        {images.length > 0 && images[0]?.link?.includes('apod.nasa.gov') && (
+          <div className="mt-2 text-xs text-accent-yellow/80">
+            ⚠️ Some images may be temporarily unavailable due to NASA API rate limits
+          </div>
+        )}
       </div>
       <div className="flex gap-2 flex-wrap mb-3">
         {DEFAULT_TOPICS.map((t) => (
@@ -146,7 +151,31 @@ const VisualGallery = ({ query = 'aurora', perPage = 8 }) => {
             )}
             {images.map((im, i) => (
               <div key={i} className="bg-space-card/50 rounded-2xl overflow-hidden border border-accent-purple/20">
-                <img src={im.link} alt={im.title} className="w-full h-40 object-cover" />
+                <img 
+                  src={im.link} 
+                  alt={im.title} 
+                  className="w-full h-40 object-cover" 
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    // Replace with fallback content
+                    const parent = e.target.parentElement;
+                    if (parent) {
+                      parent.innerHTML = `
+                        <div class="w-full h-40 bg-gray-800 flex items-center justify-center">
+                          <div class="text-center text-gray-400">
+                            <div class="text-2xl mb-2">🖼️</div>
+                            <div class="text-xs">Image unavailable</div>
+                          </div>
+                        </div>
+                        <div class="p-3">
+                          <div class="text-text-light font-semibold text-sm mb-1">${im.title}</div>
+                          <div class="text-xs text-text-light/80 line-clamp-3 mb-1">${im.desc || 'Image temporarily unavailable'}</div>
+                          <div class="text-[10px] text-text-gray">${im.date}${im.credit ? ` • ${im.credit}` : ''}</div>
+                        </div>
+                      `;
+                    }
+                  }}
+                />
                 <div className="p-3">
                   <div className="text-text-light font-semibold text-sm mb-1">{im.title}</div>
                   {im.desc && <div className="text-xs text-text-light/80 line-clamp-3 mb-1">{im.desc}</div>}

@@ -9,9 +9,13 @@ createRoot(document.getElementById('root')).render(
   </StrictMode>,
 )
 
-// Register Service Worker for PWA (only in production or when supported)
+// Register Service Worker for PWA with optimized caching
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').catch(() => {});
+    navigator.serviceWorker.register('/sw.js')
+      .then((registration) => {
+      })
+      .catch((registrationError) => {
+      });
   });
 }

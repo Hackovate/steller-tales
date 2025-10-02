@@ -8,6 +8,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import LoadingSpinner from "./components/LoadingSpinner";
 import GlobalLoader from "./components/GlobalLoader";
 import SuspenseFallback from "./components/SuspenseFallback";
+import PWAInstallButton from "./components/PWAInstallButton";
 const OnboardingModal = lazy(() => import("./components/OnboardingModal"));
 const HomePage = lazy(() => import("./pages/HomePage"));
 const DashboardPage = lazy(() => import("./pages/DashboardPage"));
@@ -43,7 +44,8 @@ function App() {
             future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
           >
             <div className="App">
-              <GlobalLoader />
+                  <GlobalLoader />
+                  <PWAInstallButton />
               <Suspense fallback={<SuspenseFallback />}>
                 <Routes>
                   <Route path="/" element={<HomePage />} />

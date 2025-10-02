@@ -20,12 +20,12 @@ export class NASASpaceWeatherAPI {
   async getAPOD({ cacheMinutes = 0 } = {}) {
     try {
       const url = `${BASE_URL}/planetary/apod?api_key=${this.apiKey}`;
-      const cached = this.readCache(url, cacheMinutes);
+      const cacheDuration = cacheMinutes || this.getCacheDuration('visual');
+      const cached = this.readCache(url, cacheDuration);
       if (cached) return cached;
       const res = await fetch(url, { cache: 'no-cache' });
       if (!res.ok) {
         if (res.status === 429) {
-          console.log('NASA API rate limited, using fallback');
           return { title: 'Astronomy Picture', explanation: '', url: 'https://apod.nasa.gov/apod/image/1901/OrionAlone_Harshaw_960.jpg' };
         }
         throw new Error('APOD fetch failed');
@@ -43,12 +43,12 @@ export class NASASpaceWeatherAPI {
     try {
       const params = new URLSearchParams({ q, media_type: 'image,video', page: String(page) });
       const url = `${IMAGES_BASE}/search?${params.toString()}`;
-      const cached = this.readCache(url, cacheMinutes);
+      const cacheDuration = cacheMinutes || this.getCacheDuration('visual');
+      const cached = this.readCache(url, cacheDuration);
       if (cached) return cached;
       const res = await fetch(url, { cache: 'no-cache' });
       if (!res.ok) {
         if (res.status === 404) {
-          console.log('NASA Images API not found, using fallback');
           return { collection: { items: [] } };
         }
         throw new Error('Images search failed');
@@ -57,12 +57,11 @@ export class NASASpaceWeatherAPI {
       this.writeCache(url, data);
       return data;
     } catch (e) {
-      console.log('NASA Images API error, using fallback');
       return { collection: { items: [] } };
     }
   }
 
-  // Simple localStorage cache to avoid burning rate limits
+  // Optimized cache with different durations for different content types
   readCache(key, maxAgeMinutes) {
     try {
       if (!maxAgeMinutes) return null;
@@ -80,6 +79,17 @@ export class NASASpaceWeatherAPI {
     } catch {}
   }
 
+  // Get cache duration based on content type
+  getCacheDuration(type) {
+    const durations = {
+      'dashboard': 5, // 5 minutes for dashboard data
+      'visual': 60, // 60 minutes for visual content
+      'pages': 60, // 60 minutes for other pages
+      'api': 10 // 10 minutes for general API calls
+    };
+    return durations[type] || 10;
+  }
+
   // Helper method to parse and validate dates
   parseValidDate(dateString) {
     if (!dateString) return null;
@@ -87,7 +97,6 @@ export class NASASpaceWeatherAPI {
     const date = new Date(dateString);
     // Check if the date is valid
     if (isNaN(date.getTime())) {
-      console.warn('Invalid date string:', dateString);
       return null;
     }
     
@@ -100,7 +109,8 @@ export class NASASpaceWeatherAPI {
       const start = startDate || new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
       const end = endDate || new Date().toISOString().split('T')[0];
       const url = `${DONKI_BASE}/FLR?startDate=${start}&endDate=${end}&api_key=${this.apiKey}`;
-      const cached = this.readCache(url, 15);
+      const cacheDuration = this.getCacheDuration('dashboard');
+      const cached = this.readCache(url, cacheDuration);
       if (cached) return cached;
       const response = await fetch(url);
       
@@ -113,7 +123,6 @@ export class NASASpaceWeatherAPI {
       this.writeCache(url, processed);
       return processed;
     } catch (error) {
-      console.error('Error fetching solar flares:', error);
       return this.getMockFlareData();
     }
   }
@@ -124,7 +133,8 @@ export class NASASpaceWeatherAPI {
       const start = startDate || new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
       const end = endDate || new Date().toISOString().split('T')[0];
       const url = `${DONKI_BASE}/CME?startDate=${start}&endDate=${end}&api_key=${this.apiKey}`;
-      const cached = this.readCache(url, 15);
+      const cacheDuration = this.getCacheDuration('dashboard');
+      const cached = this.readCache(url, cacheDuration);
       if (cached) return cached;
       const response = await fetch(url);
       
@@ -137,7 +147,6 @@ export class NASASpaceWeatherAPI {
       this.writeCache(url, processed);
       return processed;
     } catch (error) {
-      console.error('Error fetching CMEs:', error);
       return this.getMockCMEData();
     }
   }
@@ -161,7 +170,6 @@ export class NASASpaceWeatherAPI {
       this.writeCache(url, processed);
       return processed;
     } catch (error) {
-      console.error('Error fetching storms:', error);
       return this.getMockStormData();
     }
   }
@@ -211,7 +219,6 @@ export class NASASpaceWeatherAPI {
         alertLevel: this.calculateAlertLevel(flares, cmes, storms)
       };
     } catch (error) {
-      console.error('Error fetching space weather summary:', error);
       return this.getMockSpaceWeatherData();
     }
   }

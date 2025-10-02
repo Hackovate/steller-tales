@@ -8,7 +8,7 @@
 ![Vite](https://img.shields.io/badge/Vite-7.1.7-646CFF?logo=vite)
 ![Tailwind](https://img.shields.io/badge/Tailwind-3.4.0-38B2AC?logo=tailwind-css)
 
-**🌐 [Live Demo](https://stellar-tales-demo.vercel.app)** | **📚 [Documentation](docs/)** | **🚀 [Deployment Guide](DEPLOYMENT_GUIDE.md)**
+**🌐 [Live Demo](https://stellar-tales.vercel.app)**
 
 ---
 
@@ -23,7 +23,9 @@
 - 📊 **Solar Activity Dashboard** - Real-time solar wind, flares, and geomagnetic data
 - 🌍 **Impact Stories** - How space weather affects different professions
 
-### 🏆 Key Features
+---
+
+## 🏆 Key Features
 
 🌟 **Real-Time Space Weather Monitoring** - Live data from NASA DONKI and NOAA SWPC  
 📚 **6 Interactive Character Stories** - Astronaut, Pilot, Farmer, Electrician, Fisherman, Scientist  
@@ -64,6 +66,7 @@ cp .env.example .env
 npm run dev
 
 # Open browser to http://localhost:5173
+```
 
 ---
 
@@ -74,9 +77,11 @@ Create a `.env` file in the project root:
 ```env
 # Required
 VITE_NASA_API_KEY=your_nasa_api_key_here
-
+```
 
 **🔐 Important:** Never commit your `.env` file with real API keys to GitHub!
+
+---
 
 ## 📖 Usage Guide
 
@@ -98,7 +103,7 @@ Navigate through 6 character-based stories:
 - 🌾 **Farmer** - Agricultural effects and crop monitoring
 - ⚡ **Electrician** - Power grid impacts and geomagnetic storms
 - 🎣 **Fisherman** - Marine weather and navigation effects
- - 🔬 **Scientist** - Research missions, data analysis, instrument protection
+- 🔬 **Scientist** - Research missions, data analysis, instrument protection
 
 ### 4. Educational Games
 - **Solar Particle Shooter** - Learn about solar wind particles
@@ -111,8 +116,8 @@ Navigate through 6 character-based stories:
 - **Aurora Guide** - How to spot and photograph auroras
 - **Solar Activity** - Understanding solar cycles and sunspots
 - **Space Weather Effects** - Real-world impacts and safety information
- - **NASA Studies** - How NASA studies the Sun and space weather (missions, instruments)
- - **NASA Space Weather Missions** - Overview of key missions monitoring the Sun and heliosphere
+- **NASA Studies** - How NASA studies the Sun and space weather (missions, instruments)
+- **NASA Space Weather Missions** - Overview of key missions monitoring the Sun and heliosphere
 
 ---
 
@@ -143,8 +148,6 @@ Navigate through 6 character-based stories:
 
 ---
 
----
-
 ## 📊 Space Weather Data Sources
 
 The app integrates **7 real-time data sources** for comprehensive space weather monitoring:
@@ -160,7 +163,6 @@ The app integrates **7 real-time data sources** for comprehensive space weather 
 | 🌟 NASA APOD | Daily Image | 24 hours | Astronomy Picture of the Day |
 
 ---
-
 
 ## 🌐 Internationalization
 

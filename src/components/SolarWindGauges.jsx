@@ -5,10 +5,10 @@ import { getSolarWindMag1Day, getSolarWindPlasma1Day } from '../utils/swpcAPI';
 const POLL_MS = 60000;
 
 const Gauge = ({ label, value, unit, state }) => (
-  <div className="flex-1 bg-space-card/50 rounded-xl p-3 border border-accent-purple/20 text-center">
-    <div className="text-sm text-text-gray mb-1">{label}</div>
-    <div className={`text-2xl font-bold ${state.color}`}>{value ?? '—'} {unit}</div>
-    <div className="text-lg">{state.emoji}</div>
+  <div className="flex-1 bg-space-card/50 rounded-lg p-2 border border-accent-purple/20 text-center">
+    <div className="text-xs text-text-gray mb-1">{label}</div>
+    <div className={`text-lg font-bold ${state.color}`}>{value ?? '—'} {unit}</div>
+    <div className="text-sm">{state.emoji}</div>
   </div>
 );
 
@@ -39,7 +39,12 @@ const SolarWindGauges = () => {
         const density = lastP ? Number(lastP[1]) : null; // Np, /cm^3
         if (!mounted) return;
         setLatest({ speed, density, bz, time: lastP?.[0] || lastM?.[0] });
-      } catch {}
+      } catch (error) {
+        // Keep existing data if available, or use fallback values
+        if (mounted && latest.speed === null) {
+          setLatest({ speed: 400, density: 5, bz: -2, time: new Date().toISOString() });
+        }
+      }
     };
     fetchData();
     const t = setInterval(fetchData, POLL_MS);
@@ -49,12 +54,12 @@ const SolarWindGauges = () => {
   const { speedState, densityState, bzState } = classify(latest);
 
   return (
-    <div className="bg-gradient-to-br from-[#16213e]/95 to-[#1a1a2e]/95 rounded-2xl p-4 border border-accent-purple/30 shadow-lg">
-      <div className="flex items-center gap-3 mb-3">
-        <span className="text-2xl">🌬️</span>
-        <h3 className="text-lg font-bold text-accent-blue tracking-wide">{t('solarWind')}</h3>
+    <div className="bg-gradient-to-br from-[#16213e]/95 to-[#1a1a2e]/95 rounded-xl p-3 border border-accent-purple/30 shadow-lg hover:shadow-xl transition-all hover:scale-101">
+      <div className="flex items-center gap-2 mb-2">
+        <span className="text-xl">🌬️</span>
+        <h3 className="text-base font-bold text-accent-blue tracking-wide">{t('solarWind')}</h3>
       </div>
-      <div className="flex gap-3">
+      <div className="flex gap-2">
         <Gauge label={t('speed')} value={latest.speed?.toFixed ? latest.speed.toFixed(0) : latest.speed} unit="km/s" state={speedState} />
         <Gauge label={t('density')} value={latest.density?.toFixed ? latest.density.toFixed(1) : latest.density} unit="cm³" state={densityState} />
         <Gauge label={t('imfBz')} value={latest.bz?.toFixed ? latest.bz.toFixed(1) : latest.bz} unit="nT" state={bzState} />

@@ -113,7 +113,6 @@ export const playNotificationSound = () => {
     oscillator.start(audioContext.currentTime);
     oscillator.stop(audioContext.currentTime + 0.3);
   } catch (error) {
-    console.log('Audio not available:', error);
   }
 };
 
@@ -122,7 +121,6 @@ export const saveToLocalStorage = (key, data) => {
     localStorage.setItem(key, JSON.stringify(data));
     return true;
   } catch (error) {
-    console.error('Error saving to localStorage:', error);
     return false;
   }
 };
@@ -132,7 +130,6 @@ export const loadFromLocalStorage = (key, defaultValue = null) => {
     const stored = localStorage.getItem(key);
     return stored ? JSON.parse(stored) : defaultValue;
   } catch (error) {
-    console.error('Error loading from localStorage:', error);
     return defaultValue;
   }
 };

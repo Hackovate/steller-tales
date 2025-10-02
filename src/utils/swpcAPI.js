@@ -5,7 +5,7 @@ const isDev = typeof window !== 'undefined' && window.location && window.locatio
 const SWPC_BASE = isDev ? '/swpc' : 'https://services.swpc.noaa.gov';
 
 const json = async (url) => {
-  const res = await fetch(url, { cache: 'no-cache' });
+  const res = await fetch(url);
   if (!res.ok) throw new Error(`SWPC request failed: ${res.status}`);
   return res.json();
 };

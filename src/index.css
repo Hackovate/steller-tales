@@ -278,6 +278,14 @@ body.hide-bottom-nav nav {
   animation: pulse-glow 2s ease-in-out infinite;
 }
 
+.hover\:scale-101:hover {
+  transform: scale(1.01);
+}
+
+.hover\:scale-102:hover {
+  transform: scale(1.02);
+}
+
 /* ===== SCREEN SYSTEM ===== */
 .screen {
   position: relative;
@@ -430,8 +438,9 @@ body.hide-bottom-nav nav {
   
   /* Improve button sizing on small screens */
   .modal-btn, .launch-btn {
-    padding: 10px 20px;
-    font-size: 0.9rem;
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    max-width: 280px;
   }
   
   /* Better spacing for cards */
@@ -617,6 +626,16 @@ body.hide-bottom-nav nav {
 .modal.active {
   display: flex;
   animation: modal-fade-in 0.3s ease;
+}
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: -1;
 }
 
 .modal-content {
@@ -1227,6 +1246,19 @@ body.hide-bottom-nav nav {
   background: linear-gradient(45deg, #ff6b35, #e94560);
   font-weight: 600;
   text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Mobile-specific button adjustments */
+@media (max-width: 480px) {
+  .launch-btn {
+    max-width: 250px;
+    padding: 8px 12px;
+    font-size: 0.8rem;
+  }
+  
+  .launch-btn:hover {
+    transform: scale(1.02) !important; /* Reduced scale for mobile */
+  }
 }
 
 /* Onboarding Animations */

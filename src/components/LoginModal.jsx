@@ -6,7 +6,6 @@ const LoginModal = ({ isOpen, onClose }) => {
   const { createUser } = useUser();
   const [formData, setFormData] = useState({
     username: '',
-    age: '',
     language: 'en',
     character: 'astronaut'
   });
@@ -26,15 +25,9 @@ const LoginModal = ({ isOpen, onClose }) => {
     { id: 'robot', name: 'Space Robot', emoji: '🤖' }
   ];
 
-  const ageGroups = [
-    { value: '6-8', label: '6-8 years' },
-    { value: '9-11', label: '9-11 years' },
-    { value: '12-14', label: '12-14 years' },
-    { value: '15+', label: '15+ years' }
-  ];
 
   React.useEffect(() => {
-    const isValid = formData.username.trim().length >= 3 && formData.age && formData.language;
+    const isValid = formData.username.trim().length >= 3 && formData.language;
     setIsFormValid(isValid);
   }, [formData]);
 
@@ -53,6 +46,7 @@ const LoginModal = ({ isOpen, onClose }) => {
 
   return (
     <div className="modal active" id="login-modal">
+      <div className="modal-backdrop" onClick={onClose}></div>
       <div className="modal-content">
         <div className="modal-header">
           <h3>🚀 Join the Space Adventure!</h3>
@@ -81,22 +75,6 @@ const LoginModal = ({ isOpen, onClose }) => {
               />
             </div>
             
-            <div className="form-group">
-              <label htmlFor="age">Age:</label>
-              <select 
-                id="age"
-                value={formData.age}
-                onChange={(e) => handleInputChange('age', e.target.value)}
-                className={formData.age ? 'valid' : ''}
-              >
-                <option value="">Select age</option>
-                {ageGroups.map(group => (
-                  <option key={group.value} value={group.value}>
-                    {group.label}
-                  </option>
-                ))}
-              </select>
-            </div>
             
             <div className="form-group">
               <label htmlFor="language">{t('preferredLanguage')}</label>

@@ -705,7 +705,6 @@ const SolarParticleShooter = ({ onClose }) => {
           // Play button area (Y: HEIGHT-110 to HEIGHT-70)
           if (canvasY >= HEIGHT - 110 && canvasY <= HEIGHT - 70 && 
               canvasX >= WIDTH / 2 - 80 && canvasX <= WIDTH / 2 + 80) {
-            console.log('Play button clicked!');
             setShowMenu(false);
             setGameStarted(true);
             setRunning(true);
@@ -714,15 +713,12 @@ const SolarParticleShooter = ({ onClose }) => {
           // Help button area (Y: HEIGHT-60 to HEIGHT-25)
           else if (canvasY >= HEIGHT - 60 && canvasY <= HEIGHT - 25 && 
                    canvasX >= WIDTH / 2 - 60 && canvasX <= WIDTH / 2 + 60) {
-            console.log('Help button clicked!');
             setShowHelp(true);
           }
           // Fallback: if clicking in the lower half, try to determine which button
           else if (canvasY > HEIGHT / 2) {
-            console.log('Menu area clicked, Y:', canvasY);
             // If clicking in upper part of lower half, assume play button
             if (canvasY < HEIGHT - 50) {
-              console.log('Fallback: Starting game');
               setShowMenu(false);
               setGameStarted(true);
               setRunning(true);
@@ -730,7 +726,6 @@ const SolarParticleShooter = ({ onClose }) => {
             }
             // If clicking in lower part, assume help button
             else {
-              console.log('Fallback: Opening help');
               setShowHelp(true);
             }
           }
@@ -768,19 +763,6 @@ const SolarParticleShooter = ({ onClose }) => {
         <canvas ref={canvasRef} width={WIDTH} height={HEIGHT} className="w-full rounded-xl border border-accent-purple/20 bg-[#0f0f23] touch-none select-none" />
         <div className="text-xs text-text-gray mt-2">Move: ← → or drag • Pause: P key or ⏸ button • Auto-fire enabled • Collect power-ups: + (health), R (rapid), 3 (triple), S (spread), ⏸ (stop fire)</div>
         
-        {/* Mobile controls - only show during gameplay */}
-        {gameStarted && !showMenu && !showHelp && (
-          <div className="mt-2 flex items-center justify-center gap-4 select-none">
-            <button onPointerDown={() => (keysRef.current['ArrowLeft']=true)} onPointerUp={() => (keysRef.current['ArrowLeft']=false)} onPointerCancel={() => (keysRef.current['ArrowLeft']=false)} className="px-4 py-3 rounded-xl bg-space-card/50 border border-accent-purple/30 text-text-light text-lg w-20">←</button>
-            <button 
-              onClick={() => setIsPaused(!isPaused)} 
-              className="px-6 py-3 rounded-xl bg-gradient-to-r from-accent-orange to-accent-yellow text-white text-lg font-bold w-16 h-12 flex items-center justify-center shadow-lg hover:scale-105 transition-all duration-200"
-            >
-              {isPaused ? '▶' : '⏸'}
-            </button>
-            <button onPointerDown={() => (keysRef.current['ArrowRight']=true)} onPointerUp={() => (keysRef.current['ArrowRight']=false)} onPointerCancel={() => (keysRef.current['ArrowRight']=false)} className="px-4 py-3 rounded-xl bg-space-card/50 border border-accent-purple/30 text-text-light text-lg w-20">→</button>
-        </div>
-        )}
       </div>
     </div>
   );

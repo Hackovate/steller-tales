@@ -62,7 +62,6 @@ export const AppProvider = ({ children }) => {
         setMood(summary?.alertLevel || null);
         setApod(apodResp);
       } catch (error) {
-        console.error('Error fetching space weather data:', error);
       }
     });
   };

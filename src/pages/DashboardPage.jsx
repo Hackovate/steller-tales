@@ -58,6 +58,7 @@ const DashboardPage = () => {
     return () => window.removeEventListener('focus', handleFocus);
   }, [refreshData]);
 
+
   // Recent Activity section removed per request
 
   return (
@@ -79,16 +80,16 @@ const DashboardPage = () => {
         </div>
 
         {/* Progress Stats */}
-        <div className="grid grid-cols-2 gap-4 mb-8">
-          <div className="bg-gradient-to-br from-[#16213e]/95 to-[#1a1a2e]/95 backdrop-blur-md rounded-2xl p-6 text-center border border-accent-purple/30 shadow-lg hover:shadow-xl transition-all hover:scale-105 animate-in fade-in slide-in-from-left duration-500">
-            <div className="text-3xl mb-2 animate-float">📖</div>
-            <div className="text-2xl font-bold text-accent-yellow">{completedStoriesCount}</div>
-            <div className="text-text-light text-sm">{t('storiesComplete')}</div>
+        <div className="grid grid-cols-2 gap-3 mb-6 max-w-sm mx-auto">
+          <div className="bg-gradient-to-br from-[#16213e]/95 to-[#1a1a2e]/95 backdrop-blur-md rounded-xl p-4 text-center border border-accent-purple/30 shadow-lg hover:shadow-xl transition-all hover:scale-102 animate-in fade-in slide-in-from-left duration-500">
+            <div className="text-2xl mb-1 animate-float">📖</div>
+            <div className="text-xl font-bold text-accent-yellow">{completedStoriesCount}</div>
+            <div className="text-text-light text-xs">{t('storiesComplete')}</div>
           </div>
-          <div className="bg-gradient-to-br from-[#16213e]/95 to-[#1a1a2e]/95 backdrop-blur-md rounded-2xl p-6 text-center border border-accent-purple/30 shadow-lg hover:shadow-xl transition-all hover:scale-105 animate-in fade-in slide-in-from-right duration-500 delay-75">
-            <div className="text-3xl mb-2 animate-float text-accent-yellow"><BsCoin /></div>
-            <div className="text-2xl font-bold text-accent-yellow">{actualCoins}</div>
-            <div className="text-text-light text-sm">{t('spaceCoinsLabel')}</div>
+          <div className="bg-gradient-to-br from-[#16213e]/95 to-[#1a1a2e]/95 backdrop-blur-md rounded-xl p-4 text-center border border-accent-purple/30 shadow-lg hover:shadow-xl transition-all hover:scale-102 animate-in fade-in slide-in-from-right duration-500 delay-75">
+            <div className="text-2xl mb-1 animate-float text-accent-yellow flex justify-center"><BsCoin /></div>
+            <div className="text-xl font-bold text-accent-yellow">{actualCoins}</div>
+            <div className="text-text-light text-xs">{t('spaceCoinsLabel')}</div>
           </div>
         </div>
 
@@ -97,17 +98,17 @@ const DashboardPage = () => {
 
         {/* Space Weather Mood Summary */}
         {mood && (
-          <div className={`bg-gradient-to-br from-[#16213e]/95 to-[#1a1a2e]/95 rounded-2xl p-4 mb-6 border border-accent-purple/30 shadow-lg text-center`}>
-            <div className="flex items-center justify-center gap-3 mb-2">
-              <span className={`text-4xl ${mood.color}`}>{mood.emoji}</span>
-              <h3 className="text-xl font-bold text-accent-blue tracking-wide">{t('spaceWeatherMood')} <span className={`capitalize ${mood.color}`}>{mood.level}</span></h3>
+          <div className={`bg-gradient-to-br from-[#16213e]/95 to-[#1a1a2e]/95 rounded-xl p-3 mb-4 border border-accent-purple/30 shadow-lg text-center max-w-md mx-auto`}>
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <span className={`text-2xl ${mood.color}`}>{mood.emoji}</span>
+              <h3 className="text-lg font-bold text-accent-blue tracking-wide">{t('spaceWeatherMood')} <span className={`capitalize ${mood.color}`}>{mood.level}</span></h3>
             </div>
-            <p className="text-text-light text-sm leading-relaxed">{spaceWeatherData?.summary}</p>
+            <p className="text-text-light text-xs leading-relaxed">{spaceWeatherData?.summary}</p>
           </div>
         )}
 
         {/* Live Space Weather Cards */}
-        <div className="grid grid-cols-1 gap-4 sm:gap-6 mb-8">
+        <div className="grid grid-cols-1 gap-3 mb-6 max-w-lg mx-auto">
           <TodayAtAGlance />
           <SolarWindGauges />
           <EventsTimeline />
@@ -148,6 +149,12 @@ const DashboardPage = () => {
               {/* body (scrollable) */}
               <div className="px-4 py-3 max-h-[70vh] overflow-y-auto">
                 <div className="space-y-4 text-xs text-text-light">
+                  {/* Team Nomads Header */}
+                  <div className="text-center mb-6">
+                    <h2 className="text-2xl font-extrabold text-accent-orange mb-2">Team Nomads</h2>
+                    <div className="w-16 h-1 bg-gradient-to-r from-accent-orange to-accent-yellow mx-auto rounded-full"></div>
+                  </div>
+                  
                   {/* Team */}
                   <div className="bg-white/5 border border-white/10 rounded-2xl p-3">
                     <div className="font-bold text-accent-yellow mb-1">{t('team')}</div>

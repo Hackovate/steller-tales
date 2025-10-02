@@ -6,7 +6,6 @@ export const useLocalStorage = (key, initialValue) => {
       const item = window.localStorage.getItem(key);
       return item ? JSON.parse(item) : initialValue;
     } catch (error) {
-      console.error(`Error reading localStorage key "${key}":`, error);
       return initialValue;
     }
   });
@@ -17,7 +16,6 @@ export const useLocalStorage = (key, initialValue) => {
       setStoredValue(valueToStore);
       window.localStorage.setItem(key, JSON.stringify(valueToStore));
     } catch (error) {
-      console.error(`Error setting localStorage key "${key}":`, error);
     }
   };
 
@@ -90,7 +88,6 @@ export const useSpaceWeatherAPI = () => {
       setData(mockData);
     } catch (err) {
       setError('Failed to fetch space weather data');
-      console.error('Space Weather API Error:', err);
     } finally {
       setLoading(false);
     }
@@ -142,23 +139,4 @@ export const useNotifications = () => {
     sendNotification,
     isSupported: 'Notification' in window
   };
-};
-
-export const useOnlineStatus = () => {
-  const [isOnline, setIsOnline] = useState(navigator.onLine);
-
-  useEffect(() => {
-    const handleOnline = () => setIsOnline(true);
-    const handleOffline = () => setIsOnline(false);
-
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
-
-    return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
-    };
-  }, []);
-
-  return isOnline;
 };

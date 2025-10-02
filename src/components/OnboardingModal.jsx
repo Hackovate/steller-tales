@@ -10,7 +10,6 @@ const OnboardingModal = ({ isOpen, onClose }) => {
   const [showCongrats, setShowCongrats] = useState(false);
   const [formData, setFormData] = useState({
     username: '',
-    age: '',
     language: 'en',
     knowledgeLevel: 'beginner'
   });
@@ -82,7 +81,7 @@ const OnboardingModal = ({ isOpen, onClose }) => {
   const canProceed = () => {
     switch (currentPage) {
       case 1: // Profile
-        return formData.username.trim().length >= 3 && formData.age;
+        return formData.username.trim().length >= 3;
       default:
         return true;
     }
@@ -165,35 +164,19 @@ const OnboardingModal = ({ isOpen, onClose }) => {
                   <small>{formData.username.length}/20</small>
                 </div>
 
-                <div className="form-row grid grid-cols-2 gap-3">
-                  <div className="form-group compact">
-                    <label htmlFor="age">🎂 Age</label>
-                    <select 
-                      id="age"
-                      value={formData.age}
-                      onChange={(e) => handleInputChange('age', e.target.value)}
-                    >
-                      <option value="">Select</option>
-                      <option value="6-8">6-8</option>
-                      <option value="9-11">9-11</option>
-                      <option value="12-14">12-14</option>
-                      <option value="15+">15+</option>
-                    </select>
-                  </div>
-                  <div className="form-group compact">
-                    <label htmlFor="language">{t('language')}</label>
-                    <select 
-                      id="language"
-                      value={formData.language}
-                      onChange={(e) => handleInputChange('language', e.target.value)}
-                    >
-                      <option value="en">English</option>
-                      <option value="es">Español</option>
-                      <option value="bn">বাংলা</option>
-                      <option value="hi">हिंदी</option>
-                      <option value="fr">Français</option>
-                    </select>
-                  </div>
+                <div className="form-group compact">
+                  <label htmlFor="language">🌍 {t('language')}</label>
+                  <select 
+                    id="language"
+                    value={formData.language}
+                    onChange={(e) => handleInputChange('language', e.target.value)}
+                  >
+                    <option value="en">English</option>
+                    <option value="es">Español</option>
+                    <option value="bn">বাংলা</option>
+                    <option value="hi">हिंदी</option>
+                    <option value="fr">Français</option>
+                  </select>
                 </div>
               </div>
             </div>
@@ -204,7 +187,7 @@ const OnboardingModal = ({ isOpen, onClose }) => {
 
         {/* Footer */}
         <div className="onboarding-footer w-full mt-4 flex-shrink-0 sticky bottom-0 z-10 bg-gradient-to-t from-[#0f0f23ee] to-transparent backdrop-blur-md">
-          <div className="flex flex-col sm:flex-row justify-center items-center gap-2 w-full px-1 py-1">
+          <div className="flex flex-row justify-center items-center gap-2 w-full px-1 py-1">
             {currentPage > 0 && (
               <button
                 className="bg-white/80 text-purple-700 font-bold px-4 py-2 sm:px-5 rounded-full shadow hover:bg-white hover:scale-105 transition-all duration-200 border-2 border-purple-300 flex items-center gap-1 text-sm sm:text-base"
@@ -271,14 +254,16 @@ const OnboardingModal = ({ isOpen, onClose }) => {
             </div>
 
             {/* CTA */}
-            <button
-              onClick={handleCloseCongrats}
-              className="w-full launch-btn px-6 py-4 rounded-2xl shadow-2xl hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2 text-base sm:text-lg animate-pulse-glow"
-            >
-              <span className="text-xl">🚀</span>
-              Start Your Adventure
-              <span className="text-xl">✨</span>
-            </button>
+            <div className="flex justify-center">
+              <button
+                onClick={handleCloseCongrats}
+                className="max-w-xs sm:max-w-sm launch-btn px-4 sm:px-6 py-3 sm:py-4 rounded-2xl shadow-2xl hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2 text-sm sm:text-base animate-pulse-glow"
+              >
+                <span className="text-xl">🚀</span>
+                Start Your Adventure
+                <span className="text-xl">✨</span>
+              </button>
+            </div>
 
             {/* Tiny footer note */}
             <p className="mt-3 text-center text-white/70 text-xs">
