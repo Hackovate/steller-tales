@@ -54,31 +54,36 @@ We built a cross‑platform PWA that turns real space weather data into kid‑fr
 
 - Progressive Web App: Offline support, responsive, fast
 - Role‑Based Impact Stories: Six professions with tailored scenarios
-- Real‑Time Dashboard: Solar wind gauges, alerts, flares, Kp forecast
-- Aurora Maps: Live hemispheric maps from NOAA SWPC
-- Mini‑Games: Particle Shooter, Shield the Grid, quizzes
+- Real‑Time Dashboard: Solar wind gauges, alerts, flares, Kp forecast, historical comparisons
+- Interactive Aurora Maps: Live hemispheric maps from NOAA SWPC with clickable hotspots
+- Aurora Forecast Game: Real-time aurora prediction with location-based viewing guides
+- Historical Aurora Events: Timeline of major geomagnetic storms (Carrington Event, Halloween Storms, etc.)
+- Mini‑Games: Particle Shooter (with BGM), Shield the Grid, Aurora Forecast, 110+ quiz questions
 - Visual Gallery: NASA APOD and imagery with fallbacks
+- Offline Support
 - Multilingual: English, Bangla, Hindi, French, Spanish
 
 ---
 
 ## 🎮 Mini‑Games
 
+- Aurora Forecast Game — Interactive aurora forecasting with real-time NOAA data and clickable hotspots for Northern/Southern hemispheres
 - Shield the Grid — Strategy/Tower Defense; protect power infrastructure from geomagnetic storms
-- Solar Particle Shooter — Action/Arcade; navigate solar particle streams and learn particle behavior
+- Solar Particle Shooter — Action/Arcade with background music; navigate solar particle streams
 - Visual Learning Game — Recognize solar phenomena with NASA imagery (adaptive difficulty)
-- Space Weather Quiz — Multiple‑choice and true/false with explanations
+- Space Weather Quiz — 110+ multiple‑choice and true/false questions with detailed explanations
+- Wiki-Specific Quizzes — Targeted quizzes for each wiki topic with instant feedback
 
 ---
 
 ## 📱 App Walkthrough
 
 1) Onboarding → Name, age, language selection  
-2) Home → Trivia, highlights, navigation to Stories, Dashboard, Wiki, Games  
+2) Home → Trivia, highlights, Today at a Glance with historical comparisons, navigation to Stories, Dashboard, Wiki, Games  
 3) Stories → Profession‑based narratives with visuals and impacts  
-4) Dashboard → Live alerts, solar wind indicators, aurora forecasts  
-5) Wiki → Solar phenomena, celestial events, NASA missions  
-6) Games → Fun interactive learning experiences
+4) Dashboard → Live alerts, solar wind indicators, interactive aurora forecast game with hotspots, historical aurora events timeline  
+5) Wiki → Solar phenomena, celestial events, NASA missions, 110+ interactive quizzes  
+6) Games → Aurora Forecast, Particle Shooter (with BGM), Shield the Grid, comprehensive quiz system
 
 ---
 
@@ -174,11 +179,12 @@ Configuration (.env):
 
 ---
 
-## 🔒 Caching
+## 🔒 Caching & Offline Support
 
-- Service Worker caches static assets  
-- API responses cached with simple TTL strategies  
-- Fallback images/text when APIs fail
+- **Service Worker v8** with smart caching (excludes HTTP 206 responses)
+- **Cache Strategy**: Static (7 days), Media (30 days), API Data (60 minutes)
+- **Full Offline Mode**: All stories, wikis, games, and quizzes work without internet
+- **Offline Detection**: User-friendly error messages and fallback content
 
 ---
 
@@ -219,10 +225,15 @@ Below are key screens of the app interface (from `public/app_interface/`):
 
 ## 📌 Notable Components
 
+- `AuroraForecastGame.jsx` — Interactive aurora forecast with NOAA real-time data and offline detection
+- `AuroraHotspotOverlay.jsx` & `AuroraHotspotModal.jsx` — Clickable aurora viewing locations for both hemispheres
+- `TodayAtAGlance.jsx` — Space weather summary with historical event comparisons
+- `QuizModal.jsx` & `QuizCompletionModal.jsx` — 110+ wiki-specific quiz questions with instant feedback
+- `SolarParticleShooter.jsx` — Action game with background music and particle physics education
 - `VisualGallery.jsx` — NASA imagery with fallback explanations  
 - `AlertsTicker.jsx` — Live space weather alerts  
 - `ImpactStoryPanels.jsx` — Role‑based interactive stories  
-- Games (React‑based) — Kid‑oriented learning experiences
+- Games (React‑based) — Kid‑oriented learning experiences with enhanced offline support
 
 ---
 

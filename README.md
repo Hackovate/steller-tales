@@ -41,14 +41,15 @@
 
 - 🌟 **Real-Time Space Weather Monitoring** – NASA DONKI + NOAA SWPC
 - 📚 **6 Interactive Character Stories** – Astronaut, Pilot, Farmer, Electrician, Fisherman, Scientist
-- 🎮 **Mini‑Games** – Particle Shooter, Shield the Grid, quizzes
-- 🗺️ **Aurora Maps** – North and South forecasts
-- 📊 **Solar Dashboard** – Gauges, flares, Kp forecast
+- 🎮 **Mini‑Games** – Particle Shooter, Shield the Grid, Aurora Forecast Game, quizzes
+- 🗺️ **Interactive Aurora Maps** – Real-time forecasts with clickable hotspots for both hemispheres
+- 📊 **Solar Dashboard** – Gauges, flares, Kp forecast, historical comparisons
 - 🌍 **Impact Panels** – Real‑world effects on professions
+- 📜 **Historical Aurora Events** – Major geomagnetic storms from the Carrington Event to modern day
 - 🎨 **Visual Gallery** – NASA APOD and imagery
 - 🌐 **Multi‑Language** – i18next based
 - 📱 **Responsive** – Desktop, tablet, and mobile
-- 📴 **Full Offline Support** – All stories, wikis, and games work offline ([Details](./OFFLINE_SUPPORT.md))
+- 📴 **Full Offline Support** – All stories, wikis, and games work offline with enhanced error messaging
 
 ---
 
@@ -100,12 +101,14 @@ VITE_NASA_API_KEY=your_nasa_api_key_here
 
 ### 1. Home Dashboard
 - View the **Astronomy Picture of the Day** (NASA APOD)
-- Check **Today at a Glance** space weather summary
+- Check **Today at a Glance** space weather summary with historical comparisons
 - See real-time **solar activity alerts**
 
 ### 2. Space Weather Dashboard
 - **Solar Wind Gauges** - Speed, density, and magnetic field data
-- **Aurora Maps** - Live aurora probability for both hemispheres
+- **Interactive Aurora Forecast Game** - Real-time NOAA aurora probability maps with clickable hotspots
+- **Aurora Hotspots** - Explore best viewing locations in both Northern and Southern hemispheres
+- **Historical Aurora Events** - Learn about major geomagnetic storms throughout history
 - **Events Timeline** - Recent solar flares, CMEs, and geomagnetic storms
 - **Impact Story Panels** - How space weather affects different professions
 
@@ -119,18 +122,21 @@ Navigate 6 character-based stories:
 - 🔬 **Scientist** - Research missions, data analysis, instrument protection
 
 ### 4. Educational Games
-- **Solar Particle Shooter** - Learn about solar wind particles
+- **Aurora Forecast Game** - Interactive aurora forecasting with real-time NOAA data and hotspot exploration
+- **Solar Particle Shooter** - Learn about solar wind particles with background music
 - **Shield the Grid** - Protect power infrastructure from space weather
-- **Space Weather Quizzes** - Test your knowledge with interactive quizzes
+- **Space Weather Quizzes** - Test your knowledge with 110+ interactive questions
+- **Wiki-Specific Quizzes** - Targeted quizzes for each wiki topic
 - **Visual Learning Gallery** - Explore NASA imagery and videos
 
 ### 5. Wiki Section
 - **Space Weather Encyclopedia** - Detailed explanations of space weather phenomena
-- **Aurora Guide** - How to spot and photograph auroras
+- **Aurora Guide** - How to spot and photograph auroras with best viewing locations
 - **Solar Activity** - Understanding solar cycles and sunspots
 - **Space Weather Effects** - Real-world impacts and safety information
 - **NASA Studies** - How NASA studies the Sun and space weather (missions, instruments)
 - **NASA Space Weather Missions** - Overview of key missions monitoring the Sun and heliosphere
+- **Interactive Quizzes** - 110+ questions covering all wiki topics with instant feedback
 
 ---
 
