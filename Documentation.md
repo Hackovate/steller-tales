@@ -102,6 +102,14 @@ Data flow: NASA/NOAA APIs → `/src/utils/nasaAPI.js` & `/src/utils/swpcAPI.js` 
 
 ---
 
+## 🤖 Use of Artificial Intelligence (AI)
+
+- **Claude / ChatGPT / Qwen**: Idea generation and content drafting  
+- **Perplexity**: Researching facts, references, and API details  
+- **Nano Banana**: Comic book creation and visual storytelling support  
+
+---
+
 ## 📂 Directory Structure
 
 root/  
