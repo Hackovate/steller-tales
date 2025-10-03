@@ -1,7 +1,8 @@
-const APP_CACHE = 'stellar-tales-app-v9';
-const STATIC_CACHE = 'stellar-tales-static-v9';
-const MEDIA_CACHE = 'stellar-tales-media-v9';
-const DATA_CACHE = 'stellar-tales-data-v9';
+const APP_CACHE = 'stellar-tales-app-v10';
+const STATIC_CACHE = 'stellar-tales-static-v10';
+const MEDIA_CACHE = 'stellar-tales-media-v10';
+const DATA_CACHE = 'stellar-tales-data-v10';
+const API_CACHE = 'stellar-tales-api-v10';
 
 // Core shell assets to cache immediately
 const STATIC_ASSETS = [
@@ -78,7 +79,18 @@ const CACHE_DURATIONS = {
   MEDIA: 30 * 24 * 60 * 60 * 1000, // 30 days for images/videos
   PAGES: 24 * 60 * 60 * 1000, // 24 hours for pages
   DATA: 3 * 60 * 60 * 1000, // 3 hours for API data
+  API: 15 * 60 * 1000, // 15 minutes for API calls
 };
+
+// API endpoints to cache
+const API_ENDPOINTS = [
+  'https://services.swpc.noaa.gov/products/alerts.json',
+  'https://services.swpc.noaa.gov/json/goes/primary/xrays-1-day.json',
+  'https://services.swpc.noaa.gov/products/solar-wind/mag-1-day.json',
+  'https://services.swpc.noaa.gov/products/solar-wind/plasma-1-day.json',
+  'https://api.nasa.gov/planetary/apod',
+  'https://services.swpc.noaa.gov/json/ovation_aurora_latest.json'
+];
 
 // Precache core shell and content for offline support
 self.addEventListener('install', (event) => {
@@ -165,17 +177,23 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Handle external API calls with caching (NASA & NOAA)
+  // Handle external API calls with smart caching (NASA & NOAA)
   if (request.url.includes('api.nasa.gov') || 
       request.url.includes('services.swpc.noaa.gov') ||
       request.url.includes('swpc.noaa.gov') ||
       request.url.includes('images-api.nasa.gov')) {
     event.respondWith(
-      caches.open(DATA_CACHE).then(async (cache) => {
+      caches.open(API_CACHE).then(async (cache) => {
         const cached = await cache.match(request);
         
+        // Use shorter cache for critical real-time data
+        const cacheDuration = request.url.includes('alerts') || 
+                             request.url.includes('xrays') || 
+                             request.url.includes('solar-wind') ? 
+                             CACHE_DURATIONS.API : CACHE_DURATIONS.DATA;
+        
         // Return cached if valid
-        if (cached && isCacheValid(cached, CACHE_DURATIONS.DATA)) {
+        if (cached && isCacheValid(cached, cacheDuration)) {
           return cached;
         }
         

@@ -11,7 +11,7 @@ import SuspenseFallback from "./components/SuspenseFallback";
 import PWAInstallButton from "./components/PWAInstallButton";
 import ScrollToTop from "./components/ScrollToTop";
 import OfflineIndicator from "./components/OfflineIndicator";
-import PerformanceMonitor from "./components/PerformanceMonitor";
+import { resourcePreloader } from "./utils/preloader";
 const OnboardingModal = lazy(() => import("./components/OnboardingModal"));
 const HomePage = lazy(() => import("./pages/HomePage"));
 const DashboardPage = lazy(() => import("./pages/DashboardPage"));
@@ -51,7 +51,6 @@ function App() {
               <GlobalLoader />
               <PWAInstallButton />
               <OfflineIndicator />
-              <PerformanceMonitor />
               <Suspense fallback={<SuspenseFallback />}>
                 <Routes>
                   <Route path="/" element={<HomePage />} />

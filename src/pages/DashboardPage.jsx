@@ -207,15 +207,6 @@ const DashboardPage = memo(() => {
                       <li>NOAA SWPC space‑weather feeds for alerts, notifications, and measurements.</li>
                     </ul>
                   </div>
-                  {/* AI Support */}
-                  <div className="bg-white/5 border border-white/10 rounded-2xl p-3">
-                    <div className="font-bold text-accent-yellow mb-1">AI Support</div>
-                    <ul className="list-disc list-inside space-y-1">
-                      <li>Claude and ChatGPT for ideation and content assistance.</li>
-                      <li>Perplexity for research guidance.</li>
-                      <li>Naano Banana for story creating.</li>
-                    </ul>
-                  </div>
                   {/* Technology */}
                   <div className="bg-white/5 border border-white/10 rounded-2xl p-3">
                     <div className="font-bold text-accent-yellow mb-1">{t('technology')}</div>

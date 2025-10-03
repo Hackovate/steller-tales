@@ -34,9 +34,12 @@ export default defineConfig({
           if (id.includes('src/components/Quiz') || id.includes('src/data/spaceWeatherQuiz')) {
             return 'quizzes';
           }
-          // Wiki data
+          // Wiki data - split large files
           if (id.includes('src/data/wikiEntries') || id.includes('src/pages/WikiPage') || id.includes('src/pages/WikiDetailPage')) {
             return 'wiki';
+          }
+          if (id.includes('src/data/wikiQuizzes')) {
+            return 'wiki-quizzes';
           }
           // Stories data
           if (id.includes('src/pages/StoriesPage') || id.includes('src/data/stories')) {
@@ -47,6 +50,10 @@ export default defineConfig({
               id.includes('src/components/SolarWindGauges') || id.includes('src/components/EventsTimeline')) {
             return 'dashboard';
           }
+          // Utils and helpers
+          if (id.includes('src/utils/') && !id.includes('node_modules')) {
+            return 'utils';
+          }
           // Other node_modules
           if (id.includes('node_modules')) {
             return 'vendor-misc';
@@ -54,7 +61,7 @@ export default defineConfig({
         },
       },
     },
-    chunkSizeWarningLimit: 1000,
+    chunkSizeWarningLimit: 500, // Reduced warning threshold
     // Enable minification
     minify: 'terser',
     terserOptions: {
@@ -62,6 +69,14 @@ export default defineConfig({
         drop_console: true, // Remove console.logs in production
         drop_debugger: true,
         pure_funcs: ['console.log', 'console.info', 'console.debug'], // Remove specific console functions
+        passes: 2, // Multiple passes for better compression
+        unsafe: true, // Enable unsafe optimizations
+        unsafe_comps: true,
+        unsafe_math: true,
+        unsafe_proto: true,
+      },
+      mangle: {
+        toplevel: true, // Mangle top-level names
       },
     },
     // Enable source maps for production debugging (optional)
@@ -72,6 +87,8 @@ export default defineConfig({
     target: 'esnext',
     // Enable tree shaking
     treeshake: true,
+    // Additional optimizations
+    reportCompressedSize: false, // Disable size reporting for faster builds
   },
   define: {
     // NASA API key should be set in .env file as VITE_NASA_API_KEY

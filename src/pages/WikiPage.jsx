@@ -1,26 +1,58 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import StarsBackground from '../components/StarsBackground';
 import WikiCard from '../components/WikiCard';
-import { wikiEntries } from '../data/wikiEntries';
+import VirtualList from '../components/VirtualList';
+import { lazyLoadData } from '../utils/dataLoader';
 import { useLanguage } from '../context/LanguageContext';
 
 const WikiPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [wikiEntries, setWikiEntries] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { t } = useLanguage();
 
-  const handleEntryClick = (entry) => {
+  // Load wiki entries lazily
+  React.useEffect(() => {
+    const loadWikiEntries = async () => {
+      try {
+        const entries = await lazyLoadData(() => import('../data/wikiEntries'), 'wikiEntries');
+        setWikiEntries(entries.default || entries);
+      } catch (error) {
+        console.error('Failed to load wiki entries:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadWikiEntries();
+  }, []);
+
+  const handleEntryClick = useCallback((entry) => {
     // Navigate to detail page with entry id
     navigate(`/wiki/${entry.id}`);
-  };
+  }, [navigate]);
 
-  // Filter entries based on search term
-  const filteredEntries = wikiEntries.filter(entry =>
-    entry.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    entry.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (entry.content && entry.content.title.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  // Memoize filtered entries for better performance
+  const filteredEntries = useMemo(() => {
+    if (!wikiEntries.length) return [];
+    
+    return wikiEntries.filter(entry =>
+      entry.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      entry.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (entry.content && entry.content.title.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
+  }, [wikiEntries, searchTerm]);
+
+  // Render function for virtual list
+  const renderWikiCard = useCallback((entry, index) => (
+    <WikiCard
+      key={entry.id}
+      entry={entry}
+      onClick={() => handleEntryClick(entry)}
+      className="mb-4"
+    />
+  ), [handleEntryClick]);
 
   return (
     <div className="mobile-container relative pb-32 md:pb-24">
@@ -66,14 +98,22 @@ const WikiPage = () => {
 
         {/* Wiki Entries Grid */}
         <div className="mb-8">
-          {filteredEntries.length > 0 ? (
-            filteredEntries.map((entry) => (
-              <WikiCard
-                key={entry.id}
-                story={entry}
-                onClick={handleEntryClick}
-              />
-            ))
+          {loading ? (
+            <div className="text-center py-12">
+              <div className="text-6xl mb-4 animate-spin">🌌</div>
+              <h3 className="text-xl font-bold text-accent-yellow mb-2">
+                Loading Wiki...
+              </h3>
+            </div>
+          ) : filteredEntries.length > 0 ? (
+            <VirtualList
+              items={filteredEntries}
+              itemHeight={200}
+              containerHeight={600}
+              renderItem={renderWikiCard}
+              overscan={3}
+              className="space-y-4"
+            />
           ) : (
             <div className="text-center py-12">
               <div className="text-6xl mb-4">🔍</div>
