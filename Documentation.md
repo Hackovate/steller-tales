@@ -2,7 +2,7 @@
 
 - **Challenge**: Stellar Stories: Space Weather Through the Eyes of Earthlings  
 - **Team**: Team Nomads (6 Members)  
-- **Deployment**: `https://steller-tales.vercel.app`
+- **Deployment**: [https://steller-tales.vercel.app](https://steller-tales.vercel.app)
 
 ---
 
@@ -14,8 +14,8 @@ Stellar Tales is an educational Progressive Web App (PWA) for kids (ages 6–15)
 
 ## 🎥 Project Demonstration
 
-- Live App: `https://steller-tales.vercel.app`  
-- Source: See repository README for setup and stack
+- Live App: [https://steller-tales.vercel.app](https://steller-tales.vercel.app)  
+- Source: [https://github.com/Hackovate/steller-tales](https://github.com/Hackovate/steller-tales)
 
 ---
 
