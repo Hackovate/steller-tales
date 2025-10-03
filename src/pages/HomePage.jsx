@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useUser } from '../context/UserContext';
 import { useApp } from '../context/AppContext';
 import { useLanguage } from '../context/LanguageContext';
+import { nasaAPI } from '../utils/nasaAPI';
 import StarsBackground from '../components/StarsBackground';
 import TriviaCard from '../components/TriviaCard';
 import LanguageSwitcher from '../components/LanguageSwitcher';
@@ -12,6 +13,10 @@ const HomePage = () => {
   const { currentUser } = useUser();
   const { currentTrivia, loadRandomTrivia, apod } = useApp();
   const { t } = useLanguage();
+  
+  // Independent APOD loading for home page
+  const [homeApod, setHomeApod] = useState(null);
+  const [apodLoading, setApodLoading] = useState(false);
 
   useEffect(() => {
     if (!currentUser) {
@@ -23,6 +28,36 @@ const HomePage = () => {
       }
     }
   }, [currentUser]);
+
+  // Load APOD independently for home page
+  useEffect(() => {
+    const loadAPOD = async () => {
+      // Use apod from context if available, otherwise load it
+      if (apod) {
+        setHomeApod(apod);
+        return;
+      }
+      
+      setApodLoading(true);
+      try {
+        const apodData = await nasaAPI.getAPOD({ cacheMinutes: 60 });
+        setHomeApod(apodData);
+      } catch (error) {
+        console.warn('Failed to load APOD for home page:', error);
+        // Use fallback APOD
+        setHomeApod({
+          title: 'Astronomy Picture of the Day',
+          explanation: 'Loading space imagery...',
+          url: 'https://apod.nasa.gov/apod/image/2401/aurora_iss_960.jpg',
+          copyright: 'NASA'
+        });
+      } finally {
+        setApodLoading(false);
+      }
+    };
+
+    loadAPOD();
+  }, [apod]);
 
 
   return (
@@ -71,21 +106,33 @@ const HomePage = () => {
           </div>
 
           {/* APOD Section */}
-          {apod && (
-            <div className="mb-3">
+          <div className="mb-3">
+            {apodLoading ? (
               <div className="bg-gradient-to-br from-[#16213e]/95 to-[#1a1a2e]/95 rounded-2xl p-3 border border-accent-purple/30 shadow-lg">
                 <h3 className="text-lg font-bold text-accent-blue mb-2 tracking-wide">
                   {t('spaceWeatherTrivia').replace('Trivia', 'Picture of the Day 🔭')}
                 </h3>
-                <img src={apod.url} alt={apod.title} className="w-full h-32 object-cover rounded-xl mb-2" />
-                <div className="text-text-light font-semibold text-sm mb-1 line-clamp-2">{apod.title}</div>
-                <div className="text-xs text-text-gray line-clamp-2 mb-2">{apod.explanation}</div>
-                {apod.hdurl && (
-                  <a href={apod.hdurl} target="_blank" rel="noreferrer" className="inline-block text-xs text-accent-blue">Learn more →</a>
+                <div className="flex items-center justify-center h-32 bg-space-card/50 rounded-xl">
+                  <div className="text-center">
+                    <div className="text-4xl mb-2 animate-spin">🌌</div>
+                    <div className="text-sm text-text-gray">Loading space imagery...</div>
+                  </div>
+                </div>
+              </div>
+            ) : homeApod ? (
+              <div className="bg-gradient-to-br from-[#16213e]/95 to-[#1a1a2e]/95 rounded-2xl p-3 border border-accent-purple/30 shadow-lg">
+                <h3 className="text-lg font-bold text-accent-blue mb-2 tracking-wide">
+                  {t('spaceWeatherTrivia').replace('Trivia', 'Picture of the Day 🔭')}
+                </h3>
+                <img src={homeApod.url} alt={homeApod.title} className="w-full h-32 object-cover rounded-xl mb-2" />
+                <div className="text-text-light font-semibold text-sm mb-1 line-clamp-2">{homeApod.title}</div>
+                <div className="text-xs text-text-gray line-clamp-2 mb-2">{homeApod.explanation}</div>
+                {homeApod.hdurl && (
+                  <a href={homeApod.hdurl} target="_blank" rel="noreferrer" className="inline-block text-xs text-accent-blue">Learn more →</a>
                 )}
               </div>
-            </div>
-          )}
+            ) : null}
+          </div>
 
           {/* Welcome Message for Non-Logged Users */}
           {!currentUser && (
