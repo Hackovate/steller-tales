@@ -16,49 +16,83 @@ export class NASASpaceWeatherAPI {
     this.apiKey = apiKey;
   }
 
-  // Astronomy Picture of the Day (for header/credit)
+  // Astronomy Picture of the Day (for header/credit) - optimized for faster loading
   async getAPOD({ cacheMinutes = 0 } = {}) {
     try {
       const url = `${BASE_URL}/planetary/apod?api_key=${this.apiKey}`;
       const cacheDuration = cacheMinutes || this.getCacheDuration('visual');
+      
+      // Check cache first
       const cached = this.readCache(url, cacheDuration);
       if (cached) return cached;
       
-      // Check if online before fetching
+      // Return offline fallback immediately if no cache
       if (!navigator.onLine) {
         return this.getOfflineAPOD();
       }
       
-      const res = await fetch(url, { cache: 'no-cache' });
-      if (!res.ok) {
-        if (res.status === 429) {
-          return this.getOfflineAPOD();
+      // Fetch with timeout for faster failure
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+      
+      try {
+        const res = await fetch(url, { 
+          cache: 'no-cache',
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+        
+        if (!res.ok) {
+          if (res.status === 429) {
+            return this.getOfflineAPOD();
+          }
+          throw new Error('APOD fetch failed');
         }
-        throw new Error('APOD fetch failed');
+        
+        const data = await res.json();
+        this.writeCache(url, data);
+        return data;
+      } catch (error) {
+        clearTimeout(timeoutId);
+        if (error.name === 'AbortError') {
+          console.warn('APOD request timed out, using fallback');
+        }
+        throw error;
       }
-      const data = await res.json();
-      this.writeCache(url, data);
-      return data;
     } catch {
       return this.getOfflineAPOD();
     }
   }
   
-  // Offline fallback for APOD
+  // Offline fallback for APOD - improved with better fallback
   getOfflineAPOD() {
+    // Try to get the most recent cached APOD
     const cachedKeys = Object.keys(localStorage).filter(key => key.includes('planetary/apod'));
     if (cachedKeys.length > 0) {
       try {
-        const cached = JSON.parse(localStorage.getItem(cachedKeys[0]));
-        return cached.v;
-      } catch {
-        // Fall through to default
+        // Sort by timestamp to get the most recent
+        const sortedKeys = cachedKeys.sort((a, b) => {
+          const aTime = localStorage.getItem(a + '_timestamp') || '0';
+          const bTime = localStorage.getItem(b + '_timestamp') || '0';
+          return parseInt(bTime) - parseInt(aTime);
+        });
+        
+        const cached = JSON.parse(localStorage.getItem(sortedKeys[0]));
+        if (cached && cached.v) {
+          return cached.v;
+        }
+      } catch (error) {
+        console.warn('Failed to parse cached APOD:', error);
       }
     }
+    
+    // Return a reliable fallback with a working image
     return { 
-      title: 'Astronomy Picture (Offline)', 
-      explanation: 'You\'re offline. Viewing cached content.', 
-      url: 'https://apod.nasa.gov/apod/image/1901/OrionAlone_Harshaw_960.jpg' 
+      title: 'Astronomy Picture of the Day', 
+      explanation: 'Loading space imagery...', 
+      url: 'https://apod.nasa.gov/apod/image/2401/aurora_iss_960.jpg',
+      copyright: 'NASA',
+      date: new Date().toISOString().split('T')[0]
     };
   }
 

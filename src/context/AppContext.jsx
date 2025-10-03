@@ -53,13 +53,19 @@ export const AppProvider = ({ children }) => {
   const fetchSpaceWeatherData = useCallback(async () => {
     return withLoading(async () => {
       try {
-        const [summary, apodResp] = await Promise.all([
-          nasaAPI.getSpaceWeatherSummary(),
-          nasaAPI.getAPOD({ cacheMinutes: 60 })
-        ]);
+        // Load critical data first
+        const summary = await nasaAPI.getSpaceWeatherSummary();
         setSpaceWeatherData(summary);
         setMood(summary?.alertLevel || null);
-        setApod(apodResp);
+        
+        // Load APOD separately with shorter cache for faster loading
+        try {
+          const apodResp = await nasaAPI.getAPOD({ cacheMinutes: 30 });
+          setApod(apodResp);
+        } catch (apodError) {
+          // APOD is not critical, continue without it
+          console.warn('APOD failed to load:', apodError);
+        }
       } catch (error) {
         // Silently handle errors
       }

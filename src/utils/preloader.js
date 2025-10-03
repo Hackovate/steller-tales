@@ -49,12 +49,12 @@ class ResourcePreloader {
     await Promise.allSettled(promises);
   }
 
-  // Preload critical API data
+  // Preload critical API data (excluding APOD for faster initial load)
   async preloadAPIData() {
     const apiEndpoints = [
       'https://services.swpc.noaa.gov/products/alerts.json',
-      'https://services.swpc.noaa.gov/json/goes/primary/xrays-1-day.json',
-      'https://api.nasa.gov/planetary/apod'
+      'https://services.swpc.noaa.gov/json/goes/primary/xrays-1-day.json'
+      // Removed APOD from preloader - it's not critical for initial load
     ];
 
     const promises = apiEndpoints.map(async (url) => {

@@ -82,14 +82,14 @@ const CACHE_DURATIONS = {
   API: 15 * 60 * 1000, // 15 minutes for API calls
 };
 
-// API endpoints to cache
+// API endpoints to cache (excluding APOD for faster loading)
 const API_ENDPOINTS = [
   'https://services.swpc.noaa.gov/products/alerts.json',
   'https://services.swpc.noaa.gov/json/goes/primary/xrays-1-day.json',
   'https://services.swpc.noaa.gov/products/solar-wind/mag-1-day.json',
   'https://services.swpc.noaa.gov/products/solar-wind/plasma-1-day.json',
-  'https://api.nasa.gov/planetary/apod',
   'https://services.swpc.noaa.gov/json/ovation_aurora_latest.json'
+  // Removed APOD from service worker preloading - it has its own caching system
 ];
 
 // Precache core shell and content for offline support
