@@ -1,4 +1,4 @@
-import React, { useEffect, useState, memo, useCallback, useMemo } from 'react';
+import React, { useEffect, useState, memo } from 'react';
 import { useApp } from '../context/AppContext';
 import { useLanguage } from '../context/LanguageContext';
 import { nasaAPI } from '../utils/nasaAPI';
@@ -12,7 +12,6 @@ const TodayAtAGlance = memo(() => {
   const { t } = useLanguage();
   const [state, setState] = useState({ flare: '—', kp: null, wind: { temperature: null }, aurora: null, updated: null });
   const [historicalComparison, setHistoricalComparison] = useState(null);
-  const [hasLoaded, setHasLoaded] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -33,14 +32,13 @@ const TodayAtAGlance = memo(() => {
         const storms = Array.isArray(summary?.geomagneticStorms) ? summary.geomagneticStorms : [];
         const kp = storms[0]?.kpIndex ? Number(storms[0].kpIndex) : null;
         const auroraChance = kp >= 5 ? 'High' : kp >= 4 ? 'Medium' : 'Low';
-        // Latest solar wind temperature (K) from SWPC plasma 1-day
-        const p = Array.isArray(plasma) ? plasma.filter((r) => Array.isArray(r) && r[0] !== 'time_tag') : [];
+        // Latest solar wind temperature (K) from SWPC plasma 1-day - filter out null entries
+        const p = Array.isArray(plasma) ? plasma.filter((r) => Array.isArray(r) && r[0] !== 'time_tag' && r[3] !== null) : [];
         const lastP = p[p.length - 1];
         const temperature = lastP ? Number(lastP[3]) : null; // Kelvin
         
         if (!mounted) return;
         setState({ flare: flareClass || 'B/A', kp, wind: { temperature }, aurora: kp ? auroraChance : null, updated: new Date().toISOString() });
-        setHasLoaded(true);
         
         // Compare to historical events
         if (flareClass && flareClass !== 'B/A') {
@@ -58,7 +56,6 @@ const TodayAtAGlance = memo(() => {
             aurora: 'Low', 
             updated: new Date().toISOString() 
           });
-          setHasLoaded(true);
         }
       }
     };

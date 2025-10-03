@@ -1,4 +1,4 @@
-import React, { useEffect, useState, memo, useCallback, useMemo } from 'react';
+import React, { useEffect, useState, memo, useMemo } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { getSolarWindMag1Day, getSolarWindPlasma1Day } from '../utils/swpcAPI';
 
@@ -23,16 +23,15 @@ const classify = ({ speed, density, bz }) => {
 const SolarWindGauges = memo(() => {
   const { t } = useLanguage();
   const [latest, setLatest] = useState({ speed: null, density: null, bz: null, time: null });
-  const [hasLoaded, setHasLoaded] = useState(false);
 
   useEffect(() => {
     let mounted = true;
     const fetchData = async () => {
       try {
         const [mag, plasma] = await Promise.all([getSolarWindMag1Day(), getSolarWindPlasma1Day()]);
-        // Normalize arrays; last element typically latest
-        const m = Array.isArray(mag) ? mag.filter((r) => Array.isArray(r) && r[0] !== 'time_tag') : [];
-        const p = Array.isArray(plasma) ? plasma.filter((r) => Array.isArray(r) && r[0] !== 'time_tag') : [];
+        // Normalize arrays; filter out header row and null entries
+        const m = Array.isArray(mag) ? mag.filter((r) => Array.isArray(r) && r[0] !== 'time_tag' && r[1] !== null) : [];
+        const p = Array.isArray(plasma) ? plasma.filter((r) => Array.isArray(r) && r[0] !== 'time_tag' && r[1] !== null && r[2] !== null && r[3] !== null) : [];
         const lastM = m[m.length - 1];
         const lastP = p[p.length - 1];
         const bz = lastM ? Number(lastM[1]) : null; // Bz, nT
@@ -40,13 +39,11 @@ const SolarWindGauges = memo(() => {
         const density = lastP ? Number(lastP[1]) : null; // Np, /cm^3
         if (!mounted) return;
         setLatest({ speed, density, bz, time: lastP?.[0] || lastM?.[0] });
-        setHasLoaded(true);
       } catch (error) {
         console.warn('SolarWindGauges fetch error:', error);
         // Keep existing data if available, or use fallback values
         if (mounted && latest.speed === null) {
           setLatest({ speed: 400, density: 5, bz: -2, time: new Date().toISOString() });
-          setHasLoaded(true);
         }
       }
     };
@@ -55,6 +52,7 @@ const SolarWindGauges = memo(() => {
     fetchData();
     const t = setInterval(fetchData, POLL_MS);
     return () => { mounted = false; clearInterval(t); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const { speedState, densityState, bzState } = useMemo(() => classify(latest), [latest]);
