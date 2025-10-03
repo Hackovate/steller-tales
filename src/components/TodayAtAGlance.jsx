@@ -18,10 +18,14 @@ const TodayAtAGlance = memo(() => {
     let mounted = true;
     const fetchData = async () => {
       try {
-        const [summary, plasma] = await Promise.all([
-          spaceWeatherData || nasaAPI.getSpaceWeatherSummary(),
-          getSolarWindPlasma1Day().catch(() => null)
-        ]);
+        // Use spaceWeatherData if available, otherwise fetch it
+        let summary = spaceWeatherData;
+        if (!summary) {
+          summary = await nasaAPI.getSpaceWeatherSummary();
+        }
+        
+        const plasma = await getSolarWindPlasma1Day().catch(() => null);
+        
         // Biggest flare class from summary.solarActivity
         const flares = Array.isArray(summary?.solarActivity) ? summary.solarActivity : [];
         const flareClass = flares.find(f => f.intensity)?.intensity?.[0] || 'B/A';
@@ -43,7 +47,8 @@ const TodayAtAGlance = memo(() => {
           const comparison = compareFlareToHistory(flareClass);
           setHistoricalComparison(comparison);
         }
-      } catch {
+      } catch (error) {
+        console.warn('TodayAtAGlance fetch error:', error);
         // Use fallback data if no cached data available
         if (mounted && state.flare === '—') {
           setState({ 
@@ -58,17 +63,12 @@ const TodayAtAGlance = memo(() => {
       }
     };
     
-    // Start loading data when component mounts (dashboard is visited)
-    if (!hasLoaded) {
-      setHasLoaded(true);
-      fetchData();
-      const t = setInterval(fetchData, POLL_MS);
-      return () => { mounted = false; clearInterval(t); };
-    }
-    
-    return () => { mounted = false; };
+    // Always fetch data when component mounts or spaceWeatherData changes
+    fetchData();
+    const t = setInterval(fetchData, POLL_MS);
+    return () => { mounted = false; clearInterval(t); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [spaceWeatherData, hasLoaded]);
+  }, [spaceWeatherData]);
 
   // Aurora chance shown here; detailed aurora map is in Games tab
 

@@ -42,6 +42,7 @@ const SolarWindGauges = memo(() => {
         setLatest({ speed, density, bz, time: lastP?.[0] || lastM?.[0] });
         setHasLoaded(true);
       } catch (error) {
+        console.warn('SolarWindGauges fetch error:', error);
         // Keep existing data if available, or use fallback values
         if (mounted && latest.speed === null) {
           setLatest({ speed: 400, density: 5, bz: -2, time: new Date().toISOString() });
@@ -50,16 +51,11 @@ const SolarWindGauges = memo(() => {
       }
     };
     
-    // Start loading data when component mounts (dashboard is visited)
-    if (!hasLoaded) {
-      setHasLoaded(true);
-      fetchData();
-      const t = setInterval(fetchData, POLL_MS);
-      return () => { mounted = false; clearInterval(t); };
-    }
-    
-    return () => { mounted = false; };
-  }, [hasLoaded, latest.speed]);
+    // Always fetch data when component mounts
+    fetchData();
+    const t = setInterval(fetchData, POLL_MS);
+    return () => { mounted = false; clearInterval(t); };
+  }, []);
 
   const { speedState, densityState, bzState } = useMemo(() => classify(latest), [latest]);
 

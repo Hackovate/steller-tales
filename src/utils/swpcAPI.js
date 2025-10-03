@@ -17,7 +17,7 @@ const CACHE_TTL = {
 };
 
 const json = async (url, ttl = CACHE_TTL.DEFAULT) => {
-  return apiCache.get(url, { ttl, backgroundRefresh: true });
+  return apiCache.get(url, { ttl, backgroundRefresh: false });
 };
 
 export const getAlerts = () => json(`${SWPC_BASE}/products/alerts.json`, CACHE_TTL.ALERTS);
