@@ -4,6 +4,18 @@ import react from '@vitejs/plugin-react'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          router: ['react-router-dom'],
+          i18n: ['i18next', 'react-i18next'],
+        },
+      },
+    },
+    chunkSizeWarningLimit: 1000,
+  },
   define: {
     // NASA API key should be set in .env file as VITE_NASA_API_KEY
   },
