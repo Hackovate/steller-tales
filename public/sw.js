@@ -107,7 +107,9 @@ self.addEventListener('fetch', (event) => {
             cache.put(request, responseWithTimestamp.clone());
             return responseWithTimestamp;
           }
-          return cached || new Response('Network error', { status: 503 });
+          // If server returns 404/500 for SPA deep links, fall back to index.html
+          const fallback = await caches.match('/index.html');
+          return fallback || cached || new Response('Network error', { status: 503 });
         } catch (error) {
           return cached || caches.match('/index.html');
         }

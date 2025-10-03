@@ -177,9 +177,9 @@ const DashboardPage = () => {
                       <li>NOAA SWPC space‑weather feeds for alerts, notifications, and measurements.</li>
                     </ul>
                   </div>
-                  {/* Tools & Support */}
+                  {/* AI Support */}
                   <div className="bg-white/5 border border-white/10 rounded-2xl p-3">
-                    <div className="font-bold text-accent-yellow mb-1">{t('toolsAndSupport')}</div>
+                    <div className="font-bold text-accent-yellow mb-1">AI Support</div>
                     <ul className="list-disc list-inside space-y-1">
                       <li>Claude and ChatGPT for ideation and content assistance.</li>
                       <li>Perplexity for research guidance.</li>
@@ -191,7 +191,7 @@ const DashboardPage = () => {
                     <div className="font-bold text-accent-yellow mb-1">{t('technology')}</div>
                     <ul className="list-disc list-inside space-y-1">
                       <li>React + Vite + Tailwind CSS.</li>
-                      <li>Progressive Web App (PWA) support for installable, offline-friendly experience.</li>
+                      <li>Progressive Web App (PWA) support for installable experience.</li>
                       <li>Emoji and icons for illustrative UI accents.</li>
                     </ul>
                   </div>
