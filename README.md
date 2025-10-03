@@ -206,6 +206,15 @@ Note: App interface images are located in `public/app_interface/` and referenced
   - **Source**: https://www.youtube.com/watch?v=lvOcMJ3gLFQ
   - **Artist Social**: [@neutrin05](https://www.youtube.com/@neutrin05)
 
+### Background Music - Particle Shooter Mini-Game
+- **Track**: "Action loop E 90 BPM" by BRVHRTZ
+- **Source**: [Pixabay](https://pixabay.com/sound-effects/action-loop-e-90-bpm-brvhrtz-233462/)
+- **License**: Pixabay Content License (royalty-free)
+- **Usage Context**: Background audio for interactive particle shooter mini-game
+- **Educational Purpose**: Enhances user engagement while learning about space weather particle interactions
+
+- **Disclaimer**: Music serves as supporting audio content. Core innovation lies in NASA space weather data integration and educational game mechanics.
+
 ---
 
 The app supports multiple languages with i18next:

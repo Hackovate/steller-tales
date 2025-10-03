@@ -25,6 +25,7 @@ const SolarParticleShooter = ({ onClose }) => {
   const [showMenu, setShowMenu] = useState(true);
   const [highScores, setHighScores] = useState([]);
   const [showHelp, setShowHelp] = useState(false);
+  const [showCredits, setShowCredits] = useState(false);
   const [shieldActive, setShieldActive] = useState(false);
   const [shieldTimer, setShieldTimer] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -33,6 +34,7 @@ const SolarParticleShooter = ({ onClose }) => {
   const runningRef = useRef(false);
   const showMenuRef = useRef(true);
   const showHelpRef = useRef(false);
+  const showCreditsRef = useRef(false);
   const isPausedRef = useRef(false);
   const gameStartedRef = useRef(false);
   const shootingModeRef = useRef('single');
@@ -49,6 +51,7 @@ const SolarParticleShooter = ({ onClose }) => {
   useEffect(() => { runningRef.current = running; }, [running]);
   useEffect(() => { showMenuRef.current = showMenu; }, [showMenu]);
   useEffect(() => { showHelpRef.current = showHelp; }, [showHelp]);
+  useEffect(() => { showCreditsRef.current = showCredits; }, [showCredits]);
   useEffect(() => { isPausedRef.current = isPaused; }, [isPaused]);
   useEffect(() => { gameStartedRef.current = gameStarted; }, [gameStarted]);
   useEffect(() => { shootingModeRef.current = shootingMode; }, [shootingMode]);
@@ -88,6 +91,19 @@ const SolarParticleShooter = ({ onClose }) => {
   const gameOverStartTimeRef = useRef(0);
   const shieldEndTimeRef = useRef(0);
 
+  // Background music: plays across menus/game/pause, stops on unmount
+  const audioRef = useRef(null);
+  useEffect(() => {
+    const audio = new Audio('/particle-shooter-bgm.mp3');
+    audio.loop = true;
+    audio.volume = 0.5;
+    audioRef.current = audio;
+    return () => {
+      try { audio.pause(); } catch (_) {}
+      audioRef.current = null;
+    };
+  }, []);
+
   // Load high scores from localStorage
   useEffect(() => {
     const savedScores = localStorage.getItem('particleShooterHighScores');
@@ -124,6 +140,7 @@ const SolarParticleShooter = ({ onClose }) => {
     window.addEventListener('keyup', onKey);
     const moveFromEvent = (e) => {
       // Normalize to canvas coordinates even when CSS scales the canvas
+      if (!canvasRef.current) return;
       const rect = canvasRef.current.getBoundingClientRect();
       const clientX = (e.clientX ?? (e.touches && e.touches[0]?.clientX) ?? (e.pointerType ? e.clientX : undefined));
       if (clientX == null) return;
@@ -133,15 +150,20 @@ const SolarParticleShooter = ({ onClose }) => {
     };
     const onDown = (e) => { e.preventDefault(); moveFromEvent(e); };
     const onMove = (e) => { e.preventDefault(); moveFromEvent(e); };
-        const onUp = () => { };
-    canvasRef.current.addEventListener('pointerdown', onDown, { passive: false });
-    canvasRef.current.addEventListener('pointermove', onMove, { passive: false });
+    const onUp = () => { };
+    const canvas = canvasRef.current;
+    if (canvas) {
+      canvas.addEventListener('pointerdown', onDown, { passive: false });
+      canvas.addEventListener('pointermove', onMove, { passive: false });
+    }
     window.addEventListener('pointerup', onUp);
     return () => {
       window.removeEventListener('keydown', onKey);
       window.removeEventListener('keyup', onKey);
-      canvasRef.current && canvasRef.current.removeEventListener('pointerdown', onDown);
-      canvasRef.current && canvasRef.current.removeEventListener('pointermove', onMove);
+      if (canvas) {
+        canvas.removeEventListener('pointerdown', onDown);
+        canvas.removeEventListener('pointermove', onMove);
+      }
       window.removeEventListener('pointerup', onUp);
     };
   }, []);
@@ -155,7 +177,7 @@ const SolarParticleShooter = ({ onClose }) => {
       lastTsRef.current = ts;
 
       // update
-      if (runningRef.current && !showMenuRef.current && !showHelpRef.current && !isPausedRef.current) {
+      if (runningRef.current && !showMenuRef.current && !showHelpRef.current && !showCreditsRef.current && !isPausedRef.current) {
         const ship = shipRef.current;
         const speed = 240;
         ship.vx = (keysRef.current['ArrowRight'] ? 1 : 0) - (keysRef.current['ArrowLeft'] ? 1 : 0);
@@ -167,6 +189,8 @@ const SolarParticleShooter = ({ onClose }) => {
         if (showMenuRef.current && (keysRef.current[' '] || keysRef.current['Spacebar'])) {
           if (showHelpRef.current) {
             setShowHelp(false);
+          } else if (showCreditsRef.current) {
+            setShowCredits(false);
           } else {
             setShowMenu(false);
             setGameStarted(true);
@@ -555,8 +579,33 @@ const SolarParticleShooter = ({ onClose }) => {
           ctx.fillText('• Collect power-ups quickly', 30, 310);
           
           // Back button
-          ctx.fillStyle = '#4ade80'; ctx.font = 'bold 12px sans-serif';
-          ctx.fillText('TAP TO GO BACK', WIDTH / 2 - 50, HEIGHT - 20);
+          ctx.fillStyle = '#4ade80'; ctx.font = 'bold 14px sans-serif';
+          ctx.fillText('TAP TO GO BACK', WIDTH / 2 - 60, HEIGHT - 40);
+          
+        } else if (showCreditsRef.current) {
+          // Music Credits screen
+          ctx.fillStyle = 'rgba(0,0,0,0.9)'; ctx.fillRect(0, 0, WIDTH, HEIGHT);
+          
+          // Title
+          ctx.fillStyle = '#4ade80'; ctx.font = 'bold 18px sans-serif'; 
+          ctx.fillText('MUSIC CREDITS', WIDTH / 2 - 70, 40);
+          
+          // Body
+          ctx.fillStyle = '#ffffff'; ctx.font = '12px sans-serif';
+          ctx.fillText('Background Music - Particle Shooter Mini-Game', 20, 70);
+          ctx.fillStyle = '#fbbf24'; ctx.font = '12px sans-serif';
+          ctx.fillText('Track: "Action loop E 90 BPM" by BRVHRTZ', 20, 90);
+          ctx.fillStyle = '#60a5fa'; ctx.font = '10px sans-serif';
+          ctx.fillText('Source: pixabay.com/sound-effects/', 20, 110);
+          ctx.fillText('action-loop-e-90-bpm-brvhrtz-233462/', 20, 125);
+          ctx.fillStyle = '#a78bfa'; ctx.font = '12px sans-serif';
+          ctx.fillText('License: Pixabay Content License (royalty-free)', 20, 145);
+          ctx.fillStyle = '#ffffff'; ctx.font = '12px sans-serif';
+          ctx.fillText('Usage: Background audio for interactive mini-game', 20, 165);
+          
+          // Back button
+          ctx.fillStyle = '#4ade80'; ctx.font = 'bold 14px sans-serif';
+          ctx.fillText('TAP TO GO BACK', WIDTH / 2 - 60, HEIGHT - 40);
           
         } else {
           // Menu screen with high scores
@@ -589,37 +638,61 @@ const SolarParticleShooter = ({ onClose }) => {
           // Menu buttons with better visual design and larger click areas
           // Play button background (larger area)
           ctx.fillStyle = 'rgba(74, 222, 128, 0.2)';
-          ctx.fillRect(WIDTH / 2 - 80, HEIGHT - 110, 160, 40);
+          ctx.fillRect(WIDTH / 2 - 80, HEIGHT - 140, 160, 40);
           ctx.strokeStyle = '#4ade80';
           ctx.lineWidth = 2;
-          ctx.strokeRect(WIDTH / 2 - 80, HEIGHT - 110, 160, 40);
+          ctx.strokeRect(WIDTH / 2 - 80, HEIGHT - 140, 160, 40);
           
           // Play button text
           ctx.fillStyle = '#4ade80'; ctx.font = 'bold 16px sans-serif';
-          ctx.fillText('PLAY GAME', WIDTH / 2 - 40, HEIGHT - 85);
+          ctx.fillText('PLAY GAME', WIDTH / 2 - 40, HEIGHT - 115);
           
-          // Help button background (larger area)
+          // Bottom row: Help (left) and Credits (right)
+          // Help button
           ctx.fillStyle = 'rgba(6, 182, 212, 0.2)';
-          ctx.fillRect(WIDTH / 2 - 60, HEIGHT - 60, 120, 35);
+          ctx.fillRect(WIDTH / 2 - 140, HEIGHT - 80, 120, 35);
           ctx.strokeStyle = '#06b6d4';
           ctx.lineWidth = 2;
-          ctx.strokeRect(WIDTH / 2 - 60, HEIGHT - 60, 120, 35);
-          
-          // Help button text
+          ctx.strokeRect(WIDTH / 2 - 140, HEIGHT - 80, 120, 35);
           ctx.fillStyle = '#06b6d4'; ctx.font = 'bold 14px sans-serif';
-          ctx.fillText('HELP', WIDTH / 2 - 20, HEIGHT - 40);
+          ctx.fillText('HELP', WIDTH / 2 - 100, HEIGHT - 60);
+
+          // Credits button
+          ctx.fillStyle = 'rgba(99, 102, 241, 0.2)';
+          ctx.fillRect(WIDTH / 2 + 20, HEIGHT - 80, 120, 35);
+          ctx.strokeStyle = '#6366f1';
+          ctx.lineWidth = 2;
+          ctx.strokeRect(WIDTH / 2 + 20, HEIGHT - 80, 120, 35);
+          ctx.fillStyle = '#6366f1'; ctx.font = 'bold 12px sans-serif';
+          ctx.fillText('MUSIC CREDITS', WIDTH / 2 + 28, HEIGHT - 60);
           
         }
         
       } else if (isPausedRef.current) {
-        // Pause screen
+        // Pause screen with buttons
         ctx.fillStyle = 'rgba(0,0,0,0.8)'; ctx.fillRect(0, 0, WIDTH, HEIGHT);
         ctx.fillStyle = '#f59e0b'; ctx.font = 'bold 20px sans-serif'; 
-        ctx.fillText('PAUSED', WIDTH / 2 - 40, HEIGHT / 2 - 40);
-        ctx.fillStyle = '#ffffff'; ctx.font = '14px sans-serif';
-        ctx.fillText('Press P to resume', WIDTH / 2 - 60, HEIGHT / 2 - 10);
-        ctx.fillStyle = '#4ade80'; ctx.font = '12px sans-serif';
-        ctx.fillText('or tap anywhere', WIDTH / 2 - 50, HEIGHT / 2 + 20);
+        ctx.fillText('PAUSED', WIDTH / 2 - 40, HEIGHT / 2 - 70);
+        
+        // Buttons
+        const btnW = 140; const btnH = 36; const gap = 14;
+        const startY = HEIGHT / 2 - btnH - gap/2;
+        const resumeX = WIDTH / 2 - btnW/2; const resumeY = startY;
+        const quitX = WIDTH / 2 - btnW/2; const quitY = startY + btnH + gap;
+        
+        // Resume button
+        ctx.fillStyle = 'rgba(74, 222, 128, 0.2)';
+        ctx.fillRect(resumeX, resumeY, btnW, btnH);
+        ctx.strokeStyle = '#4ade80'; ctx.lineWidth = 2; ctx.strokeRect(resumeX, resumeY, btnW, btnH);
+        ctx.fillStyle = '#4ade80'; ctx.font = 'bold 14px sans-serif';
+        ctx.fillText('RESUME', WIDTH / 2 - 34, resumeY + 23);
+        
+        // Quit button
+        ctx.fillStyle = 'rgba(239, 68, 68, 0.2)';
+        ctx.fillRect(quitX, quitY, btnW, btnH);
+        ctx.strokeStyle = '#ef4444'; ctx.lineWidth = 2; ctx.strokeRect(quitX, quitY, btnW, btnH);
+        ctx.fillStyle = '#ef4444'; ctx.font = 'bold 14px sans-serif';
+        ctx.fillText('QUIT', WIDTH / 2 - 20, quitY + 23);
       } else if (!gameStartedRef.current) {
         ctx.fillStyle = 'rgba(0,0,0,0.8)'; ctx.fillRect(0, 0, WIDTH, HEIGHT);
         ctx.fillStyle = '#4ade80'; ctx.font = 'bold 20px sans-serif'; 
@@ -671,8 +744,14 @@ const SolarParticleShooter = ({ onClose }) => {
       // Prevent touch from triggering page scroll or double-tap zoom
       if (e.cancelable) e.preventDefault();
       e.stopPropagation();
+      // Start background music on first user gesture
+      if (audioRef.current) {
+        const p = audioRef.current.play();
+        if (p && typeof p.then === 'function') { p.catch(() => {}); }
+      }
       
       // Get click coordinates
+      if (!canvasRef.current) return;
       const rect = canvasRef.current.getBoundingClientRect();
       const clickY = (e.clientY || (e.touches && e.touches[0]?.clientY)) - rect.top;
       const clickX = (e.clientX || (e.touches && e.touches[0]?.clientX)) - rect.left;
@@ -682,7 +761,7 @@ const SolarParticleShooter = ({ onClose }) => {
       const canvasX = (clickX / rect.width) * WIDTH;
       
       // Check if pause button was clicked (during gameplay)
-      if (gameStartedRef.current && !showMenuRef.current && !showHelpRef.current) {
+      if (gameStartedRef.current && !showMenuRef.current && !showHelpRef.current && !showCreditsRef.current) {
         const pauseButtonX = WIDTH / 2 - 20;
         const pauseButtonY = 2;
         const pauseButtonSize = 40;
@@ -695,40 +774,51 @@ const SolarParticleShooter = ({ onClose }) => {
       }
       
       if (isPausedRef.current) {
-        // Unpause the game
-        setIsPaused(false);
+        // Check buttons on pause screen
+        const btnW = 140; const btnH = 36; const gap = 14;
+        const resumeX = WIDTH / 2 - btnW/2; 
+        const resumeY = HEIGHT / 2 - btnH - gap/2;
+        const quitX = WIDTH / 2 - btnW/2; 
+        const quitY = resumeY + btnH + gap;
+        
+        const inResume = canvasX >= resumeX && canvasX <= resumeX + btnW && canvasY >= resumeY && canvasY <= resumeY + btnH;
+        const inQuit = canvasX >= quitX && canvasX <= quitX + btnW && canvasY >= quitY && canvasY <= quitY + btnH;
+        if (inResume) {
+          setIsPaused(false);
+          return;
+        }
+        if (inQuit) {
+          try { audioRef.current && audioRef.current.pause(); } catch (_) {}
+          onClose();
+          return;
+        }
+        // Otherwise ignore taps when paused
+        return;
       } else if (showMenuRef.current) {
         if (showHelpRef.current) {
           setShowHelp(false);
+        } else if (showCreditsRef.current) {
+          setShowCredits(false);
         } else {
           // Check which button was clicked - simplified detection
           
-          // Play button area (Y: HEIGHT-110 to HEIGHT-70)
-          if (canvasY >= HEIGHT - 110 && canvasY <= HEIGHT - 70 && 
+          // Play button area (Y: HEIGHT-140 to HEIGHT-100, X: WIDTH/2-80 to WIDTH/2+80)
+          if (canvasY >= HEIGHT - 140 && canvasY <= HEIGHT - 100 && 
               canvasX >= WIDTH / 2 - 80 && canvasX <= WIDTH / 2 + 80) {
             setShowMenu(false);
             setGameStarted(true);
             setRunning(true);
             gameOverStartTimeRef.current = 0;
           }
-          // Help button area (Y: HEIGHT-60 to HEIGHT-25)
-          else if (canvasY >= HEIGHT - 60 && canvasY <= HEIGHT - 25 && 
-                   canvasX >= WIDTH / 2 - 60 && canvasX <= WIDTH / 2 + 60) {
+          // Help button area (left) - exact bounds: Y: HEIGHT-80 to HEIGHT-45, X: WIDTH/2-140 to WIDTH/2-20
+          else if (canvasY >= HEIGHT - 80 && canvasY <= HEIGHT - 45 && 
+                   canvasX >= WIDTH / 2 - 140 && canvasX <= WIDTH / 2 - 20) {
             setShowHelp(true);
           }
-          // Fallback: if clicking in the lower half, try to determine which button
-          else if (canvasY > HEIGHT / 2) {
-            // If clicking in upper part of lower half, assume play button
-            if (canvasY < HEIGHT - 50) {
-              setShowMenu(false);
-              setGameStarted(true);
-              setRunning(true);
-              gameOverStartTimeRef.current = 0;
-            }
-            // If clicking in lower part, assume help button
-            else {
-              setShowHelp(true);
-            }
+          // Credits button area (right) - exact bounds: Y: HEIGHT-80 to HEIGHT-45, X: WIDTH/2+20 to WIDTH/2+140
+          else if (canvasY >= HEIGHT - 80 && canvasY <= HEIGHT - 45 && 
+                   canvasX >= WIDTH / 2 + 20 && canvasX <= WIDTH / 2 + 140) {
+            setShowCredits(true);
           }
         }
       } else if (!gameStartedRef.current) {
@@ -741,10 +831,11 @@ const SolarParticleShooter = ({ onClose }) => {
       }
     };
     
-    canvasRef.current.addEventListener('pointerdown', handleCanvasTap, { passive: false });
+    const canvas = canvasRef.current;
+    canvas.addEventListener('pointerdown', handleCanvasTap, { passive: false });
     return () => { 
       cancelAnimationFrame(raf); 
-      canvasRef.current && canvasRef.current.removeEventListener('pointerdown', handleCanvasTap);
+      canvas && canvas.removeEventListener('pointerdown', handleCanvasTap);
     };
   }, [running, score, lives, level, combo, powerUps, gameStarted, shootingMode, powerUpTimer, gameOverTimer, showMenu, highScores, showHelp, shieldActive, shieldTimer, isPaused, onClose]);
 

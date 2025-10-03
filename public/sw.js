@@ -1,7 +1,7 @@
-const APP_CACHE = 'stellar-tales-app-v6';
-const STATIC_CACHE = 'stellar-tales-static-v6';
-const MEDIA_CACHE = 'stellar-tales-media-v6';
-const DATA_CACHE = 'stellar-tales-data-v6';
+const APP_CACHE = 'stellar-tales-app-v7';
+const STATIC_CACHE = 'stellar-tales-static-v7';
+const MEDIA_CACHE = 'stellar-tales-media-v7';
+const DATA_CACHE = 'stellar-tales-data-v7';
 
 // Core shell assets to cache immediately
 const STATIC_ASSETS = [
@@ -66,6 +66,12 @@ const STORY_ASSETS = [
   '/stories/electrician/page-5.png'
 ];
 
+// Game assets to precache
+const GAME_ASSETS = [
+  '/particle-shooter-bgm.mp3'
+  // Note: ship.svg is bundled in src/assets and will be cached as part of the JS bundle
+];
+
 // Cache durations in milliseconds
 const CACHE_DURATIONS = {
   STATIC: 7 * 24 * 60 * 60 * 1000, // 7 days for static assets
@@ -88,7 +94,7 @@ self.addEventListener('install', (event) => {
       caches.open(MEDIA_CACHE).then((cache) => {
         // Cache in batches to avoid overwhelming the browser
         const batchSize = 10;
-        const allMedia = [...WIKI_ASSETS, ...STORY_ASSETS];
+        const allMedia = [...WIKI_ASSETS, ...STORY_ASSETS, ...GAME_ASSETS];
         
         const cacheBatch = async (startIndex) => {
           const batch = allMedia.slice(startIndex, startIndex + batchSize);
