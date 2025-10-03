@@ -5,10 +5,8 @@ const ScrollToTop = () => {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    // Scroll to top when pathname changes, except for games page
-    if (pathname !== '/games') {
-      window.scrollTo(0, 0);
-    }
+    // Always scroll to top on route change
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
   }, [pathname]);
 
   return null;
