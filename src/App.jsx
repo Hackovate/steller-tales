@@ -9,6 +9,7 @@ import LoadingSpinner from "./components/LoadingSpinner";
 import GlobalLoader from "./components/GlobalLoader";
 import SuspenseFallback from "./components/SuspenseFallback";
 import PWAInstallButton from "./components/PWAInstallButton";
+import ScrollToTop from "./components/ScrollToTop";
 const OnboardingModal = lazy(() => import("./components/OnboardingModal"));
 const HomePage = lazy(() => import("./pages/HomePage"));
 const DashboardPage = lazy(() => import("./pages/DashboardPage"));
@@ -43,6 +44,7 @@ function App() {
           <Router
             future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
           >
+            <ScrollToTop />
             <div className="App">
               <GlobalLoader />
               <PWAInstallButton />
