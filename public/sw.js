@@ -1,7 +1,7 @@
-const APP_CACHE = 'stellar-tales-app-v8';
-const STATIC_CACHE = 'stellar-tales-static-v8';
-const MEDIA_CACHE = 'stellar-tales-media-v8';
-const DATA_CACHE = 'stellar-tales-data-v8';
+const APP_CACHE = 'stellar-tales-app-v9';
+const STATIC_CACHE = 'stellar-tales-static-v9';
+const MEDIA_CACHE = 'stellar-tales-media-v9';
+const DATA_CACHE = 'stellar-tales-data-v9';
 
 // Core shell assets to cache immediately
 const STATIC_ASSETS = [
@@ -77,7 +77,7 @@ const CACHE_DURATIONS = {
   STATIC: 7 * 24 * 60 * 60 * 1000, // 7 days for static assets
   MEDIA: 30 * 24 * 60 * 60 * 1000, // 30 days for images/videos
   PAGES: 24 * 60 * 60 * 1000, // 24 hours for pages
-  DATA: 60 * 60 * 1000, // 60 minutes for API data
+  DATA: 3 * 60 * 60 * 1000, // 3 hours for API data
 };
 
 // Precache core shell and content for offline support
@@ -159,25 +159,44 @@ const isNavigationRequest = (request) => request.mode === 'navigate';
 // Simple caching strategy - only cache static assets and pages
 self.addEventListener('fetch', (event) => {
   const { request } = event;
-  const url = new URL(request.url);
-
-  // Only handle same-origin requests
-  if (!request.url.startsWith(self.location.origin)) {
-    // For external requests (APIs), just pass through without caching
-    return;
-  }
 
   // Skip Vite development files and HMR
   if (request.url.includes('?t=') || request.url.includes('@vite') || request.url.includes('@react')) {
     return;
   }
 
-  // Skip API calls - let them go through normally
-  if (url.pathname.includes('/nasa/') || 
-      url.pathname.includes('/swpc/') ||
-      request.url.includes('api.nasa.gov') || 
+  // Handle external API calls with caching (NASA & NOAA)
+  if (request.url.includes('api.nasa.gov') || 
       request.url.includes('services.swpc.noaa.gov') ||
-      request.url.includes('swpc.noaa.gov')) {
+      request.url.includes('swpc.noaa.gov') ||
+      request.url.includes('images-api.nasa.gov')) {
+    event.respondWith(
+      caches.open(DATA_CACHE).then(async (cache) => {
+        const cached = await cache.match(request);
+        
+        // Return cached if valid
+        if (cached && isCacheValid(cached, CACHE_DURATIONS.DATA)) {
+          return cached;
+        }
+        
+        try {
+          const networkResponse = await fetch(request);
+          if (networkResponse.ok && networkResponse.status === 200) {
+            const responseWithTimestamp = addCacheTimestamp(networkResponse);
+            cache.put(request, responseWithTimestamp.clone());
+            return responseWithTimestamp;
+          }
+          return cached || networkResponse;
+        } catch {
+          return cached || new Response('API unavailable offline', { status: 503 });
+        }
+      })
+    );
+    return;
+  }
+
+  // Skip other external requests
+  if (!request.url.startsWith(self.location.origin)) {
     return;
   }
 
@@ -240,15 +259,11 @@ self.addEventListener('fetch', (event) => {
 
         try {
           const networkResponse = await fetch(request);
-          // Only cache full responses (200), not partial responses (206)
-          if (networkResponse.ok && networkResponse.status === 200) {
+          // Cache both full (200) and partial (206) responses for better media playback
+          if (networkResponse.ok && (networkResponse.status === 200 || networkResponse.status === 206)) {
             const responseWithTimestamp = addCacheTimestamp(networkResponse);
             cache.put(request, responseWithTimestamp.clone());
             return responseWithTimestamp;
-          }
-          // For partial responses or other success codes, just return without caching
-          if (networkResponse.status === 206) {
-            return networkResponse;
           }
           return cached || new Response('Media not available', { status: 503 });
         } catch {

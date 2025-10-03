@@ -39,7 +39,7 @@ export class NASASpaceWeatherAPI {
       const data = await res.json();
       this.writeCache(url, data);
       return data;
-    } catch (e) {
+    } catch {
       return this.getOfflineAPOD();
     }
   }
@@ -51,7 +51,7 @@ export class NASASpaceWeatherAPI {
       try {
         const cached = JSON.parse(localStorage.getItem(cachedKeys[0]));
         return cached.v;
-      } catch (e) {
+      } catch {
         // Fall through to default
       }
     }
@@ -80,7 +80,7 @@ export class NASASpaceWeatherAPI {
       const data = await res.json();
       this.writeCache(url, data);
       return data;
-    } catch (e) {
+    } catch {
       return { collection: { items: [] } };
     }
   }
@@ -94,24 +94,28 @@ export class NASASpaceWeatherAPI {
       const { t, v } = JSON.parse(raw);
       if (Date.now() - t > maxAgeMinutes * 60 * 1000) return null;
       return v;
-    } catch { return null; }
+    } catch {
+      return null;
+    }
   }
 
   writeCache(key, value) {
     try {
       localStorage.setItem(`cache:${key}`, JSON.stringify({ t: Date.now(), v: value }));
-    } catch {}
+    } catch {
+      // Ignore quota errors
+    }
   }
 
   // Get cache duration based on content type
   getCacheDuration(type) {
     const durations = {
-      'dashboard': 10, // 10 minutes for dashboard data
-      'visual': 60, // 60 minutes for visual content
-      'pages': 60, // 60 minutes for other pages
-      'api': 15 // 15 minutes for general API calls
+      'dashboard': 180, // 3 hours for dashboard data
+      'visual': 180, // 3 hours for visual content
+      'pages': 180, // 3 hours for other pages
+      'api': 180 // 3 hours for general API calls
     };
-    return durations[type] || 15;
+    return durations[type] || 180;
   }
 
   // Helper method to parse and validate dates
@@ -146,7 +150,7 @@ export class NASASpaceWeatherAPI {
       const processed = this.processFlareData(data);
       this.writeCache(url, processed);
       return processed;
-    } catch (error) {
+    } catch {
       return this.getMockFlareData();
     }
   }
@@ -170,7 +174,7 @@ export class NASASpaceWeatherAPI {
       const processed = this.processCMEData(data);
       this.writeCache(url, processed);
       return processed;
-    } catch (error) {
+    } catch {
       return this.getMockCMEData();
     }
   }
@@ -194,7 +198,7 @@ export class NASASpaceWeatherAPI {
       const processed = this.processStormData(data);
       this.writeCache(url, processed);
       return processed;
-    } catch (error) {
+    } catch {
       return this.getMockStormData();
     }
   }
@@ -222,7 +226,7 @@ export class NASASpaceWeatherAPI {
       });
       this.writeCache(url, processed);
       return processed;
-    } catch (e) {
+    } catch {
       return [];
     }
   }
@@ -244,7 +248,7 @@ export class NASASpaceWeatherAPI {
         lastUpdated: new Date().toISOString(),
         alertLevel: this.calculateAlertLevel(flares, cmes, storms)
       };
-    } catch (error) {
+    } catch {
       return this.getMockSpaceWeatherData();
     }
   }

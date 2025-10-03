@@ -268,17 +268,6 @@ const AuroraForecastGame = ({ onClose }) => {
                 {lastUpdate && <p className="text-accent-blue">{t('lastUpdated')} {lastUpdate}</p>}
               </div>
             </div>
-
-            {/* Refresh Button */}
-            <div className="flex justify-center mt-4">
-              <button
-                onClick={fetchAuroraData}
-                disabled={loading}
-                className="w-full bg-gradient-to-r from-accent-blue to-accent-purple hover:from-accent-blue/90 hover:to-accent-purple/90 disabled:opacity-50 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 hover:scale-[1.02] shadow-lg"
-              >
-                {loading ? t('updating') : `🔄 ${t('refreshForecast')}`}
-              </button>
-            </div>
           </div>
         )}
         </div>
