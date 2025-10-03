@@ -400,15 +400,15 @@ const StoriesPage = () => {
               </div>
             </div>
 
-            {/* Take Quiz Button - Shows on last page */}
+            {/* Take Quiz Button - Shows on last page (placed above pagination) */}
             {pageNumber === selectedCharacter.images.length - 1 && !showCompletionPopup && (
               <button
                 onClick={() => setShowCompletionPopup(true)}
-                className="absolute top-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-green-400 to-green-600 active:from-green-500 active:to-green-700 text-white px-6 py-3 rounded-2xl font-bold text-base transition-all duration-200 active:scale-95 shadow-xl flex items-center gap-2 animate-bounce-gentle"
+                className="absolute bottom-36 md:bottom-24 left-1/2 -translate-x-1/2 bg-gradient-to-r from-green-400 to-green-600 active:from-green-500 active:to-green-700 text-white px-4 py-2 rounded-xl font-bold text-sm transition-all duration-200 active:scale-95 shadow-xl flex items-center gap-1"
               >
-                <span className="text-xl">🎯</span>
+                <span className="text-lg">🎯</span>
                 {t('takeQuizNow')}
-                <span className="text-xl">✨</span>
+                <span className="text-lg">✨</span>
               </button>
             )}
 

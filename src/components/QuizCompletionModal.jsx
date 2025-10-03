@@ -40,7 +40,7 @@ const QuizCompletionModal = ({
       return {
         emoji: '💪',
         title: t('keepLearning') || 'Keep Learning!',
-        message: t('quizNeedsImprovementMessage') || 'Good effort! Review the material and try again.',
+        message: '',
         color: 'text-accent-orange'
       };
     }

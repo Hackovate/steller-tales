@@ -10,32 +10,44 @@
 
 **🌐 [Live Demo](https://steller-tales.vercel.app)**
 
+### Table of Contents
+- [Overview](#-overview)
+- [Key Features](#-key-features)
+- [Quick Start](#-quick-start)
+- [Environment Setup](#-environment-setup)
+- [Usage Guide](#-usage-guide)
+- [Technology Stack](#%EF%B8%8F-technology-stack)
+- [Space Weather Data Sources](#-space-weather-data-sources)
+- [Internationalization](#-internationalization)
+- [License](#-license)
+- [Acknowledgments](#-acknowledgments)
+
 ---
 
 ## 🎯 Overview
 
-**Stellar Tales** is an interactive space weather education platform designed for children that combines real-time NASA and NOAA data with engaging storytelling to teach about:
+**Stellar Tales** is an interactive space weather education platform for children. It blends real-time NASA and NOAA data with friendly stories and games. You get:
 
-- 🌟 **Real-Time Space Weather** - Live solar activity monitoring with child-friendly explanations
-- 📚 **Interactive Stories** - 5 character-based stories showing space weather impacts
-- 🎮 **Educational Games** - Mini-games and quizzes to reinforce learning
-- 🗺️ **Aurora Maps** - Live aurora probability maps for both hemispheres
-- 📊 **Solar Activity Dashboard** - Real-time solar wind, flares, and geomagnetic data
-- 🌍 **Impact Stories** - How space weather affects different professions
+- 🌟 **Real-Time Space Weather** – Live solar activity with kid‑friendly summaries
+- 📚 **Interactive Stories** – 6 character stories that show real‑life impacts
+- 🎮 **Educational Games** – Mini‑games and quizzes to reinforce learning
+- 🗺️ **Aurora Maps** – Live probability maps for both hemispheres
+- 📊 **Dashboard** – Solar wind, flares, and geomagnetic activity at a glance
+- 🌍 **Impact Panels** – Effects on professions like pilots, farmers, fishers
 
 ---
 
 ## 🏆 Key Features
 
-🌟 **Real-Time Space Weather Monitoring** - Live data from NASA DONKI and NOAA SWPC  
-📚 **6 Interactive Character Stories** - Astronaut, Pilot, Farmer, Electrician, Fisherman, Scientist  
-🎮 **Educational Mini-Games** - Solar particle shooter, shield the grid, trivia quizzes  
-🗺️ **Live Aurora Maps** - Northern and Southern Hemisphere aurora forecasts  
-📊 **Solar Activity Dashboard** - Solar wind gauges, flare monitor, Kp forecast  
-🌍 **Impact Story Panels** - Real-world space weather effects on different professions  
-🎨 **Visual Learning Gallery** - NASA APOD and space weather imagery  
-🌐 **Multi-Language Support** - Internationalization with i18next  
-📱 **Responsive Design** - Works on desktop, tablet, and mobile devices  
+- 🌟 **Real-Time Space Weather Monitoring** – NASA DONKI + NOAA SWPC
+- 📚 **6 Interactive Character Stories** – Astronaut, Pilot, Farmer, Electrician, Fisherman, Scientist
+- 🎮 **Mini‑Games** – Particle Shooter, Shield the Grid, quizzes
+- 🗺️ **Aurora Maps** – North and South forecasts
+- 📊 **Solar Dashboard** – Gauges, flares, Kp forecast
+- 🌍 **Impact Panels** – Real‑world effects on professions
+- 🎨 **Visual Gallery** – NASA APOD and imagery
+- 🌐 **Multi‑Language** – i18next based
+- 📱 **Responsive** – Desktop, tablet, and mobile
 
 ---
 
@@ -97,7 +109,7 @@ VITE_NASA_API_KEY=your_nasa_api_key_here
 - **Impact Story Panels** - How space weather affects different professions
 
 ### 3. Interactive Stories
-Navigate through 6 character-based stories:
+Navigate 6 character-based stories:
 - 🚀 **Astronaut** - Space weather effects on space missions
 - ✈️ **Pilot** - Aviation impacts and communication disruptions
 - 🌾 **Farmer** - Agricultural effects and crop monitoring
@@ -176,19 +188,6 @@ The app supports multiple languages with i18next:
 
 ---
 
-## 📚 Documentation
-
-Detailed documentation available in `/docs`:
-
-- **[Quick Start Guide](docs/QUICK_START_GUIDE.md)** - Getting started tutorial
-- **[API Reference](docs/API_REFERENCE.md)** - NASA and NOAA API integration
-- **[Story Development](docs/STORY_DEVELOPMENT.md)** - Creating new character stories
-- **[Game Development](docs/GAME_DEVELOPMENT.md)** - Adding educational games
-- **[Deployment Guide](docs/DEPLOYMENT_GUIDE.md)** - Production deployment
-- **[Contributing Guide](docs/CONTRIBUTING.md)** - How to contribute
-
----
-
 ## 📝 License
 
 This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
@@ -207,7 +206,3 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 If this project helps you teach space weather to children, please consider giving it a ⭐️ on GitHub!
 
 ---
-
-**Built with ❤️ for Space Weather Education**
-
-*Making space weather accessible and fun for the next generation of space explorers!* 🚀✨
