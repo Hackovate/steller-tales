@@ -23,10 +23,16 @@ export class NASASpaceWeatherAPI {
       const cacheDuration = cacheMinutes || this.getCacheDuration('visual');
       const cached = this.readCache(url, cacheDuration);
       if (cached) return cached;
+      
+      // Check if online before fetching
+      if (!navigator.onLine) {
+        return this.getOfflineAPOD();
+      }
+      
       const res = await fetch(url, { cache: 'no-cache' });
       if (!res.ok) {
         if (res.status === 429) {
-          return { title: 'Astronomy Picture', explanation: '', url: 'https://apod.nasa.gov/apod/image/1901/OrionAlone_Harshaw_960.jpg' };
+          return this.getOfflineAPOD();
         }
         throw new Error('APOD fetch failed');
       }
@@ -34,8 +40,26 @@ export class NASASpaceWeatherAPI {
       this.writeCache(url, data);
       return data;
     } catch (e) {
-      return { title: 'Astronomy Picture', explanation: '', url: 'https://apod.nasa.gov/apod/image/1901/OrionAlone_Harshaw_960.jpg' };
+      return this.getOfflineAPOD();
     }
+  }
+  
+  // Offline fallback for APOD
+  getOfflineAPOD() {
+    const cachedKeys = Object.keys(localStorage).filter(key => key.includes('planetary/apod'));
+    if (cachedKeys.length > 0) {
+      try {
+        const cached = JSON.parse(localStorage.getItem(cachedKeys[0]));
+        return cached.v;
+      } catch (e) {
+        // Fall through to default
+      }
+    }
+    return { 
+      title: 'Astronomy Picture (Offline)', 
+      explanation: 'You\'re offline. Viewing cached content.', 
+      url: 'https://apod.nasa.gov/apod/image/1901/OrionAlone_Harshaw_960.jpg' 
+    };
   }
 
   // NASA Images and Video Library search

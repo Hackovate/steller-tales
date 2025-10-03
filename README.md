@@ -48,6 +48,7 @@
 - 🎨 **Visual Gallery** – NASA APOD and imagery
 - 🌐 **Multi‑Language** – i18next based
 - 📱 **Responsive** – Desktop, tablet, and mobile
+- 📴 **Full Offline Support** – All stories, wikis, and games work offline ([Details](./OFFLINE_SUPPORT.md))
 
 ---
 
