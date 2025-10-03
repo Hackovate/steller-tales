@@ -198,6 +198,15 @@ Note: App interface images are located in `public/app_interface/` and referenced
 
 ---
 
+## 🎵 Credits & Attributions
+
+- **Music (Video)**: Track: [Track Name] by Neutrin05 — used in the project video
+  - **License**: [Creative Commons BY 4.0](https://creativecommons.org/licenses/by/4.0/)
+  - **Source**: https://www.youtube.com/watch?v=lvOcMJ3gLFQ
+  - **Artist Social**: [@neutrin05](https://www.youtube.com/@neutrin05)
+
+---
+
 The app supports multiple languages with i18next:
 
 - 🇺🇸 **English** (default)

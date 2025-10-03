@@ -223,5 +223,12 @@ Below are key screens of the app interface (from `public/app_interface/`):
 - MIT License (see `LICENSE`)  
 - Media & Data: © NASA, NOAA (public usage guidelines)
 
+### 🎵 Music (Video)
+
+- **Track**: [Track Name] by Neutrin05 — used in the project demonstration video
+  - **License**: [Creative Commons BY 4.0](https://creativecommons.org/licenses/by/4.0/)
+  - **Source**: https://www.youtube.com/watch?v=lvOcMJ3gLFQ
+  - **Artist Social**: [@neutrin05](https://www.youtube.com/@neutrin05)
+
 ---
 
