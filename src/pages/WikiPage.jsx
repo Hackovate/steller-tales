@@ -2,8 +2,6 @@ import React, { useState, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import StarsBackground from '../components/StarsBackground';
 import WikiCard from '../components/WikiCard';
-import VirtualList from '../components/VirtualList';
-import { lazyLoadData } from '../utils/dataLoader';
 import { useLanguage } from '../context/LanguageContext';
 
 const WikiPage = () => {
@@ -17,8 +15,8 @@ const WikiPage = () => {
   React.useEffect(() => {
     const loadWikiEntries = async () => {
       try {
-        const entries = await lazyLoadData(() => import('../data/wikiEntries'), 'wikiEntries');
-        setWikiEntries(entries.default || entries);
+        const module = await import('../data/wikiEntries');
+        setWikiEntries(module.wikiEntries);
       } catch (error) {
         console.error('Failed to load wiki entries:', error);
       } finally {
@@ -44,15 +42,6 @@ const WikiPage = () => {
     );
   }, [wikiEntries, searchTerm]);
 
-  // Render function for virtual list
-  const renderWikiCard = useCallback((entry, index) => (
-    <WikiCard
-      key={entry.id}
-      entry={entry}
-      onClick={() => handleEntryClick(entry)}
-      className="mb-4"
-    />
-  ), [handleEntryClick]);
 
   return (
     <div className="mobile-container relative pb-32 md:pb-24">
@@ -106,14 +95,15 @@ const WikiPage = () => {
               </h3>
             </div>
           ) : filteredEntries.length > 0 ? (
-            <VirtualList
-              items={filteredEntries}
-              itemHeight={200}
-              containerHeight={600}
-              renderItem={renderWikiCard}
-              overscan={3}
-              className="space-y-4"
-            />
+            <div className="space-y-4">
+              {filteredEntries.map((entry) => (
+                <WikiCard
+                  key={entry.id}
+                  story={entry}
+                  onClick={() => handleEntryClick(entry)}
+                />
+              ))}
+            </div>
           ) : (
             <div className="text-center py-12">
               <div className="text-6xl mb-4">🔍</div>
