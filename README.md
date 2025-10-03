@@ -8,7 +8,7 @@
 ![Vite](https://img.shields.io/badge/Vite-7.1.7-646CFF?logo=vite)
 ![Tailwind](https://img.shields.io/badge/Tailwind-3.4.0-38B2AC?logo=tailwind-css)
 
-**🌐 [Live Demo](https://stellar-tales.vercel.app)**
+**🌐 [Live Demo](https://steller-tales.vercel.app)**
 
 ---
 
