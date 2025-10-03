@@ -3,6 +3,7 @@ import { useApp } from '../context/AppContext';
 import { useLanguage } from '../context/LanguageContext';
 import { nasaAPI } from '../utils/nasaAPI';
 import { getSolarWindPlasma1Day } from '../utils/swpcAPI';
+import { compareFlareToHistory } from '../data/historicalAuroraEvents';
 
 const POLL_MS = 90000;
 
@@ -10,6 +11,7 @@ const TodayAtAGlance = () => {
   const { spaceWeatherData } = useApp();
   const { t } = useLanguage();
   const [state, setState] = useState({ flare: '—', kp: null, wind: { temperature: null }, aurora: null, updated: null });
+  const [historicalComparison, setHistoricalComparison] = useState(null);
 
   useEffect(() => {
     let mounted = true;
@@ -33,7 +35,13 @@ const TodayAtAGlance = () => {
         
         if (!mounted) return;
         setState({ flare: flareClass || 'B/A', kp, wind: { temperature }, aurora: kp ? auroraChance : null, updated: new Date().toISOString() });
-      } catch (error) {
+        
+        // Compare to historical events
+        if (flareClass && flareClass !== 'B/A') {
+          const comparison = compareFlareToHistory(flareClass);
+          setHistoricalComparison(comparison);
+        }
+      } catch {
         // Use fallback data if no cached data available
         if (mounted && state.flare === '—') {
           setState({ 
@@ -49,6 +57,7 @@ const TodayAtAGlance = () => {
     fetchData();
     const t = setInterval(fetchData, POLL_MS);
     return () => { mounted = false; clearInterval(t); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Aurora chance shown here; detailed aurora map is in Games tab
@@ -81,6 +90,32 @@ const TodayAtAGlance = () => {
           <div className="text-xs text-text-light">{t('lookNorthAtNight')}</div>
         </div>
       </div>
+      
+      {/* Historical Comparison Section */}
+      {historicalComparison && (
+        <div className="mt-3 p-3 bg-gradient-to-br from-accent-yellow/10 to-accent-orange/10 rounded-lg border border-accent-yellow/30">
+          <div className="flex items-start gap-2 mb-2">
+            <span className="text-xl">{historicalComparison.event.emoji}</span>
+            <div className="flex-1">
+              <div className="text-xs font-bold text-accent-yellow mb-1">
+                🏆 Compare to History
+              </div>
+              <div className="text-sm text-text-light leading-relaxed">
+                <span className="font-bold text-accent-blue">Today: {historicalComparison.currentFlare}</span>
+                {' vs '}
+                <span className="font-bold text-accent-orange">{historicalComparison.event.name}: {historicalComparison.event.flareClass}</span>
+              </div>
+              <div className="text-xs text-accent-yellow mt-1 font-medium">
+                {historicalComparison.comparison}
+              </div>
+              <div className="text-xs text-text-gray mt-1 italic">
+                {historicalComparison.event.funFact}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      
       {state.updated && <div className="text-xs text-text-gray mt-2">{t('lastUpdated')} {new Date(state.updated).toLocaleTimeString()}</div>}
     </div>
   );

@@ -14,8 +14,6 @@ if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js')
       .then((registration) => {
-        console.log('✅ Service Worker registered for offline support');
-        
         // Show notification when offline content is ready
         registration.addEventListener('updatefound', () => {
           const newWorker = registration.installing;
@@ -28,14 +26,9 @@ if ('serviceWorker' in navigator) {
             }
           });
         });
-        
-        // If already controlled, content is ready
-        if (navigator.serviceWorker.controller) {
-          console.log('📱 App ready for offline use');
-        }
       })
-      .catch((registrationError) => {
-        console.error('Service Worker registration failed:', registrationError);
+      .catch(() => {
+        // Service worker registration failed silently
       });
   });
 }

@@ -33,6 +33,28 @@ export const getAuroraUrls = () => ({
   south: `${SWPC_BASE}/images/aurora-forecast-southern-hemisphere.png`
 });
 
+// Aurora forecast data (OVATION model)
+export const getAuroraForecastData = async () => {
+  try {
+    const response = await fetch(`${SWPC_BASE}/json/ovation_aurora_latest.json`);
+    if (!response.ok) throw new Error(`Aurora forecast request failed: ${response.status}`);
+    return response.json();
+  } catch (error) {
+    console.error('Error fetching aurora forecast data:', error);
+    // Return fallback data structure
+    return {
+      north: { hpi: 'N/A', forecast_time: 'N/A' },
+      south: { hpi: 'N/A', forecast_time: 'N/A' }
+    };
+  }
+};
+
+// Aurora forecast images (latest)
+export const getAuroraForecastImages = () => ({
+  north: `${SWPC_BASE}/images/animations/ovation/north/latest.jpg`,
+  south: `${SWPC_BASE}/images/animations/ovation/south/latest.jpg`
+});
+
 // Latest Sun images
 export const getSunImageUrls = () => ({
   suvi195: `${SWPC_BASE}/images/suvi/suvi-latest-195.jpg`,

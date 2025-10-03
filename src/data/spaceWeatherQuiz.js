@@ -1,4 +1,4 @@
-// Space Weather Quiz (static) — curated from user-provided references
+// Space Weather Quiz (static) - curated from user-provided references
 // Sources (for educators):
 // - NASA Heliophysics: https://science.nasa.gov/heliophysics/focus-areas/space-weather/
 // - NASA: Solar storms and flares: https://science.nasa.gov/sun/solar-storms-and-flares/
@@ -37,12 +37,12 @@ export const quizCategories = [
         q: 'What causes the Northern Lights (auroras)?',
         options: [
           'Moonlight reflecting on clouds',
-          'Charged particles from the Sun interacting with Earth’s atmosphere',
+          'Charged particles from the Sun interacting with Earths atmosphere',
           'Volcanoes near the North Pole',
           'City lights at night'
         ],
         a: 1,
-        explain: 'Auroras happen when solar particles energize gases high in the atmosphere, making them glow.'
+        explain: 'Auroras happen when solar particles collide with oxygen and nitrogen in Earths upper atmosphere, making them glow green, red, and purple!'
       },
       {
         q: 'Which part of Earth helps protect us from space weather?',
@@ -53,89 +53,374 @@ export const quizCategories = [
           'Clouds'
         ],
         a: 1,
-        explain: 'Earth’s magnetic field and atmosphere shield us from most solar radiation.'
+        explain: 'Earths magnetic field acts like an invisible shield, deflecting most harmful solar radiation and particles away from our planet.'
+      },
+      {
+        q: 'How long does it take for light from the Sun to reach Earth?',
+        options: [
+          '1 minute',
+          '8 minutes',
+          '1 hour',
+          '1 day'
+        ],
+        a: 1,
+        explain: 'Sunlight travels 93 million miles (150 million km) in about 8 minutes and 20 seconds!'
+      },
+      {
+        q: 'What layer of the Sun\'s atmosphere is visible during a total solar eclipse?',
+        options: [
+          'Core',
+          'Photosphere',
+          'Corona',
+          'Chromosphere'
+        ],
+        a: 2,
+        explain: 'The corona is the Sun\'s outer atmosphere, visible as a white halo during eclipses. It\'s millions of degrees hot - even hotter than the Sun\'s surface!'
       }
     ]
   },
   {
     id: 'flares',
-    title: 'Flares and Radiation',
+    title: 'Solar Flares & X-rays',
     questions: [
       {
-        q: 'A solar flare is best described as…',
+        q: 'A solar flare is best described as...',
         options: [
           'A piece of the Sun breaking off',
-          'A sudden burst of energy and light from the Sun',
+          'A sudden burst of electromagnetic energy from the Sun',
           'A comet flying into the Sun',
           'An eclipse'
         ],
         a: 1,
-        explain: 'Solar flares are intense bursts of radiation and light from active regions on the Sun.'
+        explain: 'Solar flares are intense bursts of radiation released when magnetic energy stored in the Sun\'s atmosphere is suddenly released!'
       },
       {
-        q: 'Which flares are the strongest class?',
-        options: ['C‑class', 'M‑class', 'X‑class', 'B‑class'],
+        q: 'Which flare class is the strongest?',
+        options: ['C-class', 'M-class', 'X-class', 'B-class'],
         a: 2,
-        explain: 'X‑class are the most powerful flares, then M, then C.'
+        explain: 'X-class flares are the most powerful! Each class is 10x stronger than the one before: B -> C -> M -> X. An X10 flare is 10,000x stronger than a B1!'
       },
       {
-        q: 'A big flare can cause temporary problems with…',
-        options: ['Rainfall', 'HF radio and GPS signals', 'Tides', 'Earthquakes'],
+        q: 'How fast do X-rays from a solar flare travel to Earth?',
+        options: [
+          'Speed of light (8 minutes)',
+          '1 hour',
+          '1-3 days',
+          'Instantly'
+        ],
+        a: 0,
+        explain: 'X-rays travel at the speed of light, so they reach Earth in just 8 minutes! This is why we can\'t get advance warning of flare impacts.'
+      },
+      {
+        q: 'What can a strong X-class solar flare disrupt on Earth?',
+        options: [
+          'Ocean tides',
+          'Weather patterns',
+          'Radio communications and GPS',
+          'Earth\'s rotation'
+        ],
+        a: 2,
+        explain: 'Strong flares ionize Earth\'s upper atmosphere, causing radio blackouts (especially HF radio) and GPS errors. Pilots and sailors are affected!'
+      },
+      {
+        q: 'The most powerful solar flare ever recorded happened in...',
+        options: [
+          '1859 (Carrington Event)',
+          '2003 (Halloween Storms)',
+          '1989 (Quebec Blackout)',
+          '2024 (May Superstorm)'
+        ],
         a: 1,
-        explain: 'Strong solar flares can cause radio blackouts and affect GPS accuracy.'
+        explain: 'The Halloween Storms of 2003 produced an X28 flare - the largest ever measured! Though the 1859 Carrington Event was likely even stronger (estimated X45+).'
+      },
+      {
+        q: 'Which NASA satellite monitors the Sun for solar flares 24/7?',
+        options: [
+          'Hubble Space Telescope',
+          'James Webb Space Telescope',
+          'Solar Dynamics Observatory (SDO)',
+          'International Space Station'
+        ],
+        a: 2,
+        explain: 'NASA\'s SDO takes pictures of the Sun every 0.75 seconds in 10 different wavelengths, helping scientists predict space weather!'
       }
     ]
   },
   {
     id: 'cme',
-    title: 'CMEs and Storms',
+    title: 'CMEs & Solar Storms',
     questions: [
       {
-        q: 'A Coronal Mass Ejection (CME) is…',
+        q: 'A Coronal Mass Ejection (CME) is...',
         options: [
-          'A cloud of solar material launched into space',
+          'A cloud of billion-ton solar plasma launched into space',
           'A new planet forming',
           'A type of asteroid',
           'A telescope error'
         ],
         a: 0,
-        explain: 'A CME is a huge burst of solar plasma and magnetic field ejected from the Sun.'
+        explain: 'A CME is a massive explosion of billions of tons of magnetized plasma ejected from the Sun at speeds up to 3,000 km/s (6.7 million mph)!'
       },
+      {
+        q: 'How long does it take for a CME to reach Earth?',
+        options: [
+          '8 minutes',
+          '1-3 days',
+          '1 week',
+          '1 month'
+        ],
+        a: 1,
+        explain: 'Fast CMEs can reach Earth in 15-18 hours, while typical CMEs take 1-3 days. This gives us time to prepare!'
+      },
+      {
+        q: 'What happens when a CME hits Earth\'s magnetic field?',
+        options: [
+          'Nothing at all',
+          'A geomagnetic storm can occur',
+          'The Moon gets brighter',
+          'Earthquakes happen'
+        ],
+        a: 1,
+        explain: 'CMEs compress Earth\'s magnetosphere, triggering geomagnetic storms that can create auroras, disrupt satellites, and affect power grids!'
+      },
+      {
+        q: 'The direction of a CME\'s magnetic field determines...',
+        options: [
+          'Its color',
+          'How strongly it affects Earth (southward Bz is worst)',
+          'The weather on Earth',
+          'Ocean currents'
+        ],
+        a: 1,
+        explain: 'When a CME\'s magnetic field points south (negative Bz), it connects with Earth\'s northward field, transferring more energy and causing stronger storms!'
+      },
+      {
+        q: 'Which famous event caused a 9-hour blackout in Quebec, Canada?',
+        options: [
+          'A hurricane',
+          'March 1989 geomagnetic storm',
+          'An earthquake',
+          'A flood'
+        ],
+        a: 1,
+        explain: 'The March 13, 1989 geomagnetic storm (Kp 9) caused Quebec\'s power grid to collapse in 90 seconds, leaving 6 million people without power for 9 hours!'
+      },
+      {
+        q: 'Can CMEs reach other planets?',
+        options: [
+          'No, they only affect Earth',
+          'Yes! CMEs can hit Mars, Venus, and even outer planets',
+          'Only the Moon',
+          'Only Mercury'
+        ],
+        a: 1,
+        explain: 'CMEs spread out in a cone from the Sun and can affect multiple planets! NASA\'s MAVEN spacecraft studies how CMEs impact Mars\' atmosphere.'
+      }
+    ]
+  },
+  {
+    id: 'storms',
+    title: 'Geomagnetic Storms',
+    questions: [
       {
         q: 'Geomagnetic storms are measured by which index?',
-        options: ['UV', 'Kp', 'Richter', 'pH'],
+        options: ['UV Index', 'Kp Index', 'Richter Scale', 'Air Quality Index'],
         a: 1,
-        explain: 'The Kp index rates geomagnetic activity from 0 to 9.'
+        explain: 'The Kp index measures geomagnetic activity from 0 (quiet) to 9 (extreme storm). Kp 5+ means aurora are likely visible at mid-latitudes!'
       },
       {
-        q: 'Stronger storms can sometimes affect power grids on Earth.',
-        options: ['True', 'False'],
-        a: 0,
-        explain: 'Geomagnetic storms can induce currents in long power lines and transformers.'
+        q: 'What is the "auroral oval"?',
+        options: [
+          'A type of spacecraft',
+          'The oval-shaped region around Earth\'s poles where auroras occur',
+          'A crater on the Moon',
+          'A solar feature'
+        ],
+        a: 1,
+        explain: 'The auroral oval is a ring-shaped zone around the magnetic poles where auroras are most common. During storms, it expands toward the equator!'
+      },
+      {
+        q: 'During a Kp 9 storm, auroras can be seen as far south as...',
+        options: [
+          'Alaska only',
+          'Canada',
+          'Southern US states like Texas and Florida',
+          'Auroras never happen outside polar regions'
+        ],
+        a: 2,
+        explain: 'During extreme Kp 9 storms, the auroral oval expands so much that people in Mexico, Florida, and even the Caribbean can see auroras!'
+      },
+      {
+        q: 'What does "Dst" measure in space weather?',
+        options: [
+          'Distance to the Sun',
+          'The strength of Earth\'s magnetic field disturbance',
+          'Solar temperature',
+          'Asteroid distance'
+        ],
+        a: 1,
+        explain: 'Dst (Disturbance storm time) measures how much a storm compresses Earth\'s magnetic field. Values below -100 nT indicate a major storm!'
+      },
+      {
+        q: 'The 1859 Carrington Event had an estimated Dst of...',
+        options: [
+          '-50 nT (weak)',
+          '-300 nT (strong)',
+          '-1,760 nT (extreme!)',
+          '0 nT (no storm)'
+        ],
+        a: 2,
+        explain: 'The Carrington Event\'s Dst of -1,760 nT was the strongest ever recorded! For comparison, the 2003 Halloween Storms were -383 nT.'
+      },
+      {
+        q: 'Which technology is MOST vulnerable to geomagnetic storms?',
+        options: [
+          'Light bulbs',
+          'Satellites and power grids',
+          'Bicycles',
+          'Books'
+        ],
+        a: 1,
+        explain: 'Satellites can be damaged by radiation, GPS signals get disrupted, and power grids can experience dangerous current surges during storms!'
+      }
+    ]
+  },
+  {
+    id: 'particles',
+    title: 'Solar Energetic Particles',
+    questions: [
+      {
+        q: 'Solar Energetic Particles (SEPs) are...',
+        options: [
+          'Tiny pieces of the Sun traveling near light speed',
+          'High-energy protons and electrons accelerated by solar events',
+          'Meteorites from the Sun',
+          'Solar dust'
+        ],
+        a: 1,
+        explain: 'SEPs are super-fast charged particles (mostly protons) accelerated to nearly the speed of light by solar flares and CMEs!'
+      },
+      {
+        q: 'Who is MOST at risk from Solar Energetic Particles?',
+        options: [
+          'Deep-sea divers',
+          'Astronauts in space and pilots on polar flights',
+          'Mountain climbers',
+          'People at the beach'
+        ],
+        a: 1,
+        explain: 'Astronauts and high-altitude polar flight crews receive higher radiation doses during SEP events. NASA monitors this closely!'
+      },
+      {
+        q: 'How fast can SEPs reach Earth after a solar flare?',
+        options: [
+          '8 minutes',
+          '15-30 minutes',
+          '1-3 days',
+          '1 week'
+        ],
+        a: 1,
+        explain: 'The fastest SEPs can reach Earth in 15-30 minutes! This is faster than CMEs (1-3 days) but slower than X-rays (8 minutes).'
+      },
+      {
+        q: 'During a major SEP event, airlines may...',
+        options: [
+          'Cancel all flights',
+          'Reroute polar flights to lower latitudes',
+          'Only fly at night',
+          'Nothing - planes are unaffected'
+        ],
+        a: 1,
+        explain: 'Polar routes get more radiation exposure. During strong SEP events, flights are rerouted away from poles to protect passengers and crew!'
+      },
+      {
+        q: 'Which NASA mission studies how SEPs affect Mars?',
+        options: [
+          'Hubble',
+          'MAVEN (Mars Atmosphere and Volatile EvolutioN)',
+          'Voyager',
+          'Apollo'
+        ],
+        a: 1,
+        explain: 'MAVEN studies how solar wind and SEPs strip away Mars\' atmosphere over time. Mars has no magnetic field to protect it like Earth does!'
       }
     ]
   },
   {
     id: 'safety',
-    title: 'People and Safety',
+    title: 'Space Weather Safety & Tech',
     questions: [
       {
-        q: 'Who is most concerned about Solar Energetic Particles (SEPs)?',
-        options: ['Deep‑sea divers', 'Astronauts and satellite operators', 'Mountain climbers', 'Gardeners'],
+        q: 'What does NOAA\'s Space Weather Prediction Center do?',
+        options: [
+          'Predict rain and snow',
+          'Monitor and forecast solar activity and space weather',
+          'Study ocean temperatures',
+          'Track hurricanes only'
+        ],
         a: 1,
-        explain: 'SEPs can increase radiation exposure in space and at high altitudes.'
+        explain: 'NOAA SWPC provides 24/7 monitoring and forecasts of solar flares, CMEs, geomagnetic storms, and solar radiation to protect technology and people!'
       },
       {
-        q: 'Pilots flying polar routes may see radio issues during…',
-        options: ['Heavy rain', 'Strong flares/geomagnetic storms', 'Snow', 'Fog'],
+        q: 'During a strong geomagnetic storm, GPS accuracy can...',
+        options: [
+          'Improve',
+          'Degrade by several meters',
+          'Stop working completely forever',
+          'Stay exactly the same'
+        ],
         a: 1,
-        explain: 'HF radio can be disrupted by strong flares and storms, especially near the poles.'
+        explain: 'Storms ionize the atmosphere, causing GPS signals to take longer paths. Errors can reach 10+ meters, affecting navigation and surveying!'
       },
       {
-        q: 'Auroras mean Wi‑Fi routers are melting.',
+        q: 'If a Carrington Event-level storm hit Earth today, it could...',
+        options: [
+          'Have no effect',
+          'Cause widespread power outages and satellite damage',
+          'Stop the Earth from rotating',
+          'Change the weather permanently'
+        ],
+        a: 1,
+        explain: 'A Carrington-level event today could damage transformers, disable satellites, and cause trillion-dollar economic impacts. We\'re much more vulnerable now!'
+      },
+      {
+        q: 'How do satellites protect themselves during solar storms?',
+        options: [
+          'They hide behind the Moon',
+          'They enter "safe mode" and orient solar panels away from the Sun',
+          'They land back on Earth',
+          'They don\'t need protection'
+        ],
+        a: 1,
+        explain: 'Satellites can turn sensitive instruments off, reorient to minimize radiation exposure, and wait out the storm in a protective configuration!'
+      },
+      {
+        q: 'The International Space Station orbits at about 400 km altitude. Is it protected from space weather?',
+        options: [
+          'Yes, completely safe',
+          'Partially - Earth\'s magnetic field helps, but astronauts still monitor radiation',
+          'No protection at all',
+          'Only during the day'
+        ],
+        a: 1,
+        explain: 'The ISS is within Earth\'s magnetosphere, which provides protection. But during major storms, astronauts shelter in more shielded areas!'
+      },
+      {
+        q: 'Auroras mean Wi-Fi routers and electronics are in danger.',
         options: ['True', 'False'],
         a: 1,
-        explain: 'Myth! Auroras are natural lights in the sky and don’t melt home electronics.'
+        explain: 'Myth! Auroras are beautiful natural lights caused by particles in Earth\'s UPPER atmosphere (100+ km up). Your home electronics are perfectly safe!'
+      },
+      {
+        q: 'Which color aurora is caused by oxygen at high altitudes (200+ km)?',
+        options: [
+          'Green',
+          'Red',
+          'Blue',
+          'Yellow'
+        ],
+        a: 1,
+        explain: 'Red auroras come from oxygen at 200-400 km altitude. Green auroras (most common) come from oxygen at 100-200 km. Blue/purple come from nitrogen!'
       }
     ]
   }
@@ -148,7 +433,7 @@ export const quizLevels = {
   advanced: quizCategories // placeholder to expand with more difficult items
 };
 
-// Generate a session: 10–15 randomized questions for a given level
+// Generate a session: 10-15 randomized questions for a given level
 export const generateQuizSession = (level = 'basic', count = 12) => {
   const cats = quizLevels[level] || quizCategories;
   const pool = cats.flatMap((c) => c.questions.map((q) => ({ ...q, category: c.title })));

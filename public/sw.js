@@ -1,7 +1,7 @@
-const APP_CACHE = 'stellar-tales-app-v7';
-const STATIC_CACHE = 'stellar-tales-static-v7';
-const MEDIA_CACHE = 'stellar-tales-media-v7';
-const DATA_CACHE = 'stellar-tales-data-v7';
+const APP_CACHE = 'stellar-tales-app-v8';
+const STATIC_CACHE = 'stellar-tales-static-v8';
+const MEDIA_CACHE = 'stellar-tales-media-v8';
+const DATA_CACHE = 'stellar-tales-data-v8';
 
 // Core shell assets to cache immediately
 const STATIC_ASSETS = [
@@ -77,7 +77,7 @@ const CACHE_DURATIONS = {
   STATIC: 7 * 24 * 60 * 60 * 1000, // 7 days for static assets
   MEDIA: 30 * 24 * 60 * 60 * 1000, // 30 days for images/videos
   PAGES: 24 * 60 * 60 * 1000, // 24 hours for pages
-  DATA: 24 * 60 * 60 * 1000, // 24 hours for data
+  DATA: 60 * 60 * 1000, // 60 minutes for API data
 };
 
 // Precache core shell and content for offline support
@@ -86,9 +86,7 @@ self.addEventListener('install', (event) => {
     Promise.all([
       // Cache core app shell
       caches.open(APP_CACHE).then((cache) => 
-        cache.addAll(STATIC_ASSETS).catch((error) => {
-          console.log('Some core assets failed to cache:', error);
-        })
+        cache.addAll(STATIC_ASSETS).catch(() => {})
       ),
       // Cache media content (wikis and stories)
       caches.open(MEDIA_CACHE).then((cache) => {
@@ -102,8 +100,8 @@ self.addEventListener('install', (event) => {
           
           try {
             await cache.addAll(batch);
-          } catch (error) {
-            console.log(`Batch ${startIndex}-${startIndex + batchSize} failed:`, error);
+          } catch {
+            // Skip failed batches
           }
           
           // Continue with next batch
@@ -127,7 +125,6 @@ self.addEventListener('activate', (event) => {
       Promise.all(
         keys.map((key) => {
           if (!currentCaches.includes(key)) {
-            console.log('Deleting old cache:', key);
             return caches.delete(key);
           }
         })
@@ -204,7 +201,7 @@ self.addEventListener('fetch', (event) => {
           // If server returns 404/500 for SPA deep links, fall back to index.html
           const fallback = await caches.match('/index.html');
           return fallback || cached || new Response('Network error', { status: 503 });
-        } catch (error) {
+        } catch {
           return cached || caches.match('/index.html');
         }
       })
@@ -233,7 +230,7 @@ self.addEventListener('fetch', (event) => {
           // Return cached immediately, but update in background if needed
           if (!isCacheValid(cached, CACHE_DURATIONS.MEDIA)) {
             fetch(request).then((networkResponse) => {
-              if (networkResponse && networkResponse.ok) {
+              if (networkResponse && networkResponse.ok && networkResponse.status === 200) {
                 cache.put(request, addCacheTimestamp(networkResponse));
               }
             }).catch(() => {});
@@ -243,13 +240,18 @@ self.addEventListener('fetch', (event) => {
 
         try {
           const networkResponse = await fetch(request);
-          if (networkResponse.ok) {
+          // Only cache full responses (200), not partial responses (206)
+          if (networkResponse.ok && networkResponse.status === 200) {
             const responseWithTimestamp = addCacheTimestamp(networkResponse);
             cache.put(request, responseWithTimestamp.clone());
             return responseWithTimestamp;
           }
+          // For partial responses or other success codes, just return without caching
+          if (networkResponse.status === 206) {
+            return networkResponse;
+          }
           return cached || new Response('Media not available', { status: 503 });
-        } catch (error) {
+        } catch {
           return cached || new Response('Offline - media not cached', { status: 503 });
         }
       })
@@ -274,10 +276,10 @@ self.addEventListener('fetch', (event) => {
             return responseWithTimestamp;
           }
           return cached || networkResponse;
-        } catch (error) {
+        } catch {
           // Offline - return cached version
           if (cached) return cached;
-          throw error;
+          throw new Error('Offline and not cached');
         }
       })
     );
@@ -287,8 +289,8 @@ self.addEventListener('fetch', (event) => {
   // For all other requests, network first with cache fallback
   event.respondWith(
     fetch(request).then((response) => {
-      // Cache successful responses for offline use
-      if (response.ok && request.method === 'GET') {
+      // Cache successful responses for offline use (except partial responses)
+      if (response.ok && response.status === 200 && request.method === 'GET') {
         const responseClone = response.clone();
         caches.open(DATA_CACHE).then((cache) => {
           cache.put(request, addCacheTimestamp(responseClone));

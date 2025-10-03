@@ -6,6 +6,7 @@ import QuizCompletionModal from '../components/QuizCompletionModal';
 import VisualGallery from '../components/VisualGallery';
 import ShieldTheGrid from '../components/ShieldTheGrid';
 import SolarParticleShooter from '../components/SolarParticleShooter';
+import AuroraForecastGame from '../components/AuroraForecastGame';
 import { useLanguage } from '../context/LanguageContext';
 
 const GamesPage = () => {
@@ -48,6 +49,14 @@ const GamesPage = () => {
       type: 'mini'
     },
     {
+      id: 'aurora-forecast',
+      title: 'Aurora Forecast Map',
+      description: 'Track real-time aurora activity worldwide!',
+      emoji: '🌌',
+      type: 'learning',
+      tag: 'learning'
+    },
+    {
       id: 'visual-learning',
       title: 'Visual Learning Gallery',
       description: 'Watch space clips and images to learn fast!',
@@ -73,6 +82,10 @@ const GamesPage = () => {
     }
     if (game.id === 'solar-particle-shooter') {
       setGameActive('shooter');
+      return;
+    }
+    if (game.id === 'aurora-forecast') {
+      setGameActive('aurora-forecast');
       return;
     }
     if (game.type === 'action') {
@@ -183,7 +196,7 @@ const GamesPage = () => {
       {/* Game Modal */}
       {selectedGame && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-gradient-to-br from-[#16213e]/95 to-[#1a1a2e]/95 backdrop-blur-md rounded-2xl p-6 max-w-md w-full border border-accent-purple/30 shadow-2xl">
+          <div className="bg-gradient-to-br from-[#16213e]/95 to-[#1a1a2e]/95 backdrop-blur-md rounded-2xl p-6 max-w-[430px] w-full border border-accent-purple/30 shadow-2xl">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-xl font-bold text-accent-blue">
                 {selectedGame.title}
@@ -313,7 +326,7 @@ const GamesPage = () => {
       )}
       {gameActive === 'visual-gallery' && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-gradient-to-br from-[#16213e]/95 to-[#1a1a2e]/95 backdrop-blur-md rounded-2xl p-6 max-w-md w-full border border-accent-purple/30 shadow-2xl overflow-y-auto max-h-[85vh]">
+          <div className="bg-gradient-to-br from-[#16213e]/95 to-[#1a1a2e]/95 backdrop-blur-md rounded-2xl p-6 max-w-[430px] w-full border border-accent-purple/30 shadow-2xl overflow-y-auto max-h-[85vh]">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-xl font-bold text-accent-blue">{t('visualLearningGalleryTitle')}</h3>
               <button onClick={() => { setGameActive(false); setSelectedGame(null); }} className="text-text-gray hover:text-text-light text-2xl">×</button>
@@ -329,6 +342,9 @@ const GamesPage = () => {
       )}
       {gameActive === 'shooter' && (
         <SolarParticleShooter onClose={() => { setGameActive(false); setSelectedGame(null); }} />
+      )}
+      {gameActive === 'aurora-forecast' && (
+        <AuroraForecastGame onClose={() => { setGameActive(false); setSelectedGame(null); }} />
       )}
     </div>
   );

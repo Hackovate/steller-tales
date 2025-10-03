@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import StarsBackground from "../components/StarsBackground";
 import VisualGallery from "../components/VisualGallery";
+import QuizModal from "../components/QuizModal";
 import { wikiEntries } from "../data/wikiEntries";
 import { useLanguage } from "../context/LanguageContext";
 
@@ -9,6 +10,7 @@ const WikiDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { t } = useLanguage();
+  const [showQuiz, setShowQuiz] = useState(false);
 
   // Safer back navigation, especially for mobile where history may be missing
   const handleBack = React.useCallback(() => {
@@ -18,11 +20,19 @@ const WikiDetailPage = () => {
         navigate(-1);
         return;
       }
-    } catch (_) {
+    } catch {
       // no-op, will fall through to fallback route
     }
     navigate("/wiki");
   }, [navigate]);
+
+  const handleQuizClick = () => {
+    setShowQuiz(true);
+  };
+
+  const handleQuizClose = () => {
+    setShowQuiz(false);
+  };
 
   const entry = wikiEntries.find((e) => e.id === id);
 
@@ -99,13 +109,21 @@ const WikiDetailPage = () => {
           </div>
         )}
 
-        {/* Back Button */}
-        <div className="mb-6">
+        {/* Back Button and Quiz Button */}
+        <div className="mb-6 flex justify-between items-center">
           <button
             onClick={handleBack}
             className="px-4 py-2 bg-gradient-to-r from-accent-orange to-accent-yellow rounded-xl hover:from-accent-orange/90 hover:to-accent-yellow/90 text-white font-bold transition-all duration-300 hover:scale-105 hover:shadow-lg"
           >
             {t('back')}
+          </button>
+          
+          {/* Quiz Button - Show for all wiki entries */}
+          <button
+            onClick={handleQuizClick}
+            className="px-4 py-2 bg-gradient-to-r from-accent-purple to-accent-blue rounded-xl hover:from-accent-purple/90 hover:to-accent-blue/90 text-white font-bold transition-all duration-300 hover:scale-105 hover:shadow-lg"
+          >
+            🧠 Take Quiz
           </button>
         </div>
 
@@ -170,7 +188,7 @@ const WikiDetailPage = () => {
                     <img
                       src={section.image}
                       alt={`${section.subtitle || "Section"} illustration`}
-                      className="w-full max-w-sm h-auto rounded-xl shadow-lg border border-accent-purple/30"
+                      className="w-full max-w-[400px] h-auto rounded-xl shadow-lg border border-accent-purple/30"
                       loading="lazy"
                     />
                   </div>
@@ -213,6 +231,18 @@ const WikiDetailPage = () => {
               <VisualGallery query={entry.galleryQuery} perPage={6} />
             </div>
           </div>
+        )}
+
+        {/* Quiz Modal */}
+        {showQuiz && (
+          <QuizModal
+            wikiId={entry.id}
+            count={10}
+            onClose={handleQuizClose}
+            onComplete={() => {
+              handleQuizClose();
+            }}
+          />
         )}
       </div>
     </div>

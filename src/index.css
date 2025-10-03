@@ -642,7 +642,7 @@ body.hide-bottom-nav nav {
   background: var(--bg-card);
   border-radius: 15px;
   width: 100%;
-  max-width: 350px;
+  max-width: 400px;
   max-height: 100dvh;
   overflow-y: auto;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
@@ -732,7 +732,7 @@ body.hide-bottom-nav nav {
 
 /* ===== ONBOARDING MODAL STYLES ===== */
 .onboarding-modal {
-  max-width: 500px;
+  max-width: 430px;
   max-height: 100dvh;
   padding: 0;
   overflow: hidden;

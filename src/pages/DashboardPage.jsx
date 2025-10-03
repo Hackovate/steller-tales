@@ -80,7 +80,7 @@ const DashboardPage = () => {
         </div>
 
         {/* Progress Stats */}
-        <div className="grid grid-cols-2 gap-3 mb-6 max-w-sm mx-auto">
+        <div className="grid grid-cols-2 gap-3 mb-6 max-w-[400px] mx-auto">
           <div className="bg-gradient-to-br from-[#16213e]/95 to-[#1a1a2e]/95 backdrop-blur-md rounded-xl p-4 text-center border border-accent-purple/30 shadow-lg hover:shadow-xl transition-all hover:scale-102 animate-in fade-in slide-in-from-left duration-500">
             <div className="text-2xl mb-1 animate-float">📖</div>
             <div className="text-xl font-bold text-accent-yellow">{completedStoriesCount}</div>
@@ -98,7 +98,7 @@ const DashboardPage = () => {
 
         {/* Space Weather Mood Summary */}
         {mood && (
-          <div className={`bg-gradient-to-br from-[#16213e]/95 to-[#1a1a2e]/95 rounded-xl p-3 mb-4 border border-accent-purple/30 shadow-lg text-center max-w-md mx-auto`}>
+          <div className={`bg-gradient-to-br from-[#16213e]/95 to-[#1a1a2e]/95 rounded-xl p-3 mb-4 border border-accent-purple/30 shadow-lg text-center max-w-[400px] mx-auto`}>
             <div className="flex items-center justify-center gap-2 mb-2">
               <span className={`text-2xl ${mood.color}`}>{mood.emoji}</span>
               <h3 className="text-lg font-bold text-accent-blue tracking-wide">{t('spaceWeatherMood')} <span className={`capitalize ${mood.color}`}>{mood.level}</span></h3>

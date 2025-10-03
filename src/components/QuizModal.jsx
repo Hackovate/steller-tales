@@ -1,23 +1,30 @@
 import React, { useMemo, useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { generateQuizSession } from '../data/spaceWeatherQuiz';
+import { generateWikiQuiz } from '../data/wikiQuizzes';
 import QuizCompletionModal from './QuizCompletionModal';
 
-const QuizModal = ({ onClose, level = 'basic', count = 12, onComplete, onShowCompletion }) => {
+const QuizModal = ({ onClose, level = 'basic', count = 12, wikiId = null, onComplete, onShowCompletion }) => {
   const { t } = useLanguage();
   const [questions] = useState(() => {
-    const qs = generateQuizSession(level, count);
-    // Shuffle options per question and remap correct answer index
-    return qs.map((q) => {
-      const pairs = q.options.map((opt, idx) => ({ opt, idx }));
-      for (let i = pairs.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [pairs[i], pairs[j]] = [pairs[j], pairs[i]];
-      }
-      const options = pairs.map((p) => p.opt);
-      const a = pairs.findIndex((p) => p.idx === q.a);
-      return { ...q, options, a };
-    });
+    // If wikiId is provided, use wiki-specific quiz, otherwise use general quiz
+    const qs = wikiId ? generateWikiQuiz(wikiId, count) : generateQuizSession(level, count);
+    
+    // If wiki quiz returns empty (no quiz available), fall back to general quiz
+    if (qs.length === 0 && wikiId) {
+      return generateQuizSession('basic', count).map((q) => {
+        const pairs = q.options.map((opt, idx) => ({ opt, idx }));
+        for (let i = pairs.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [pairs[i], pairs[j]] = [pairs[j], pairs[i]];
+        }
+        const options = pairs.map((p) => p.opt);
+        const a = pairs.findIndex((p) => p.idx === q.a);
+        return { ...q, options, a };
+      });
+    }
+    
+    return qs;
   });
   const [qIdx, setQIdx] = useState(0);
   const [score, setScore] = useState(0);
@@ -43,18 +50,24 @@ const QuizModal = ({ onClose, level = 'basic', count = 12, onComplete, onShowCom
       return;
     }
     // Quiz completed - show completion modal instead of closing
-    onComplete && onComplete({ level, score, total });
-    onShowCompletion && onShowCompletion({ level, score, total });
+    const resultLevel = wikiId || level;
+    onComplete && onComplete({ level: resultLevel, score, total });
+    onShowCompletion && onShowCompletion({ level: resultLevel, score, total });
   };
 
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div className="bg-gradient-to-br from-[#16213e]/95 to-[#1a1a2e]/95 backdrop-blur-md rounded-2xl p-6 max-w-md w-full border border-accent-purple/30 shadow-2xl">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-xl font-bold text-accent-blue">{t('spaceWeatherQuiz')}</h3>
+          <h3 className="text-xl font-bold text-accent-blue">
+            {wikiId ? 'Wiki Quiz' : t('spaceWeatherQuiz')}
+          </h3>
           <button onClick={onClose} className="text-text-gray hover:text-text-light text-2xl">×</button>
         </div>
-        <div className="text-xs text-text-gray mb-2">{t('level')} {level} • {t('question')} {currentNumber} / {total} • {t('score')} {score}</div>
+        <div className="text-xs text-text-gray mb-2">
+          {!wikiId && `${t('level')} ${level} • `}
+          {t('question')} {currentNumber} / {total} • {t('score')} {score}
+        </div>
         <div className="text-text-light font-semibold mb-3">{question.q}</div>
         <div className="space-y-2">
           {question.options.map((opt, i) => {

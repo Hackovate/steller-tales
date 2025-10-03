@@ -419,7 +419,7 @@ const StoriesPage = () => {
                 <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => {}} />
                 
                 {/* Popup Card (new) */}
-                <div className="relative max-w-sm w-full animate-in zoom-in duration-500">
+                <div className="relative max-w-[400px] w-full animate-in zoom-in duration-500">
                   <div className="rounded-[28px] overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.45)] border border-white/15">
                     <div className="relative p-6 text-center bg-[radial-gradient(120%_120%_at_0%_0%,rgba(148,63,231,0.95)_0%,rgba(59,130,246,0.9)_45%,rgba(16,185,129,0.85)_100%)]">
                       <div className="absolute -top-3 -right-3 text-3xl animate-twinkle">⭐</div>
@@ -501,7 +501,7 @@ const StoriesPage = () => {
           <div className="absolute bottom-6 left-4 text-2xl animate-bounce-gentle">⭐</div>
           <div className="absolute bottom-6 right-4 text-2xl animate-twinkle">✨</div>
           
-          <div className="relative bg-gradient-to-br from-space-card/95 via-space-blue/95 to-accent-purple/20 backdrop-blur-xl p-0 rounded-3xl w-full max-w-md shadow-2xl border-4 border-accent-orange/50 max-h-[90vh] flex flex-col overflow-hidden">
+          <div className="relative bg-gradient-to-br from-space-card/95 via-space-blue/95 to-accent-purple/20 backdrop-blur-xl p-0 rounded-3xl w-full max-w-[430px] shadow-2xl border-4 border-accent-orange/50 max-h-[90vh] flex flex-col overflow-hidden">
             {/* Header */}
             <div className="px-5 pt-4 pb-3 bg-black/40 backdrop-blur-md border-b border-white/10">
               <div className="flex items-center justify-between">
@@ -692,7 +692,7 @@ const StoriesPage = () => {
           <div className="absolute bottom-6 left-4 text-3xl animate-bounce-gentle">⭐</div>
           <div className="absolute bottom-6 right-4 text-3xl animate-twinkle">✨</div>
           
-          <div className="relative max-w-sm w-full animate-in zoom-in duration-500">
+          <div className="relative max-w-[400px] w-full animate-in zoom-in duration-500">
             <div className="rounded-[28px] overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.45)] border border-white/15">
               {/* Header */}
               <div className="relative pt-7 pb-4 px-6 text-center bg-gradient-to-br from-accent-purple/95 via-accent-blue/95 to-accent-orange/70 backdrop-blur-xl">
