@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import shipSvg from '../assets/ship.svg';
 
 // Canvas-based shooter: move with left/right, tap/click to fire. Mobile friendly.
 // No external services required; all local simulation.
@@ -107,7 +108,7 @@ const SolarParticleShooter = ({ onClose }) => {
   useEffect(() => {
     // load ship sprite
     const img = new Image();
-    img.src = '/src/assets/ship.svg';
+    img.src = shipSvg; // Use imported asset
     shipImgRef.current = img;
     // create layered starfield
     const makeStars = [];
