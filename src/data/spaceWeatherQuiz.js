@@ -54,28 +54,6 @@ export const quizCategories = [
         ],
         a: 1,
         explain: 'Earths magnetic field acts like an invisible shield, deflecting most harmful solar radiation and particles away from our planet.'
-      },
-      {
-        q: 'How long does it take for light from the Sun to reach Earth?',
-        options: [
-          '1 minute',
-          '8 minutes',
-          '1 hour',
-          '1 day'
-        ],
-        a: 1,
-        explain: 'Sunlight travels 93 million miles (150 million km) in about 8 minutes and 20 seconds!'
-      },
-      {
-        q: 'What layer of the Sun\'s atmosphere is visible during a total solar eclipse?',
-        options: [
-          'Core',
-          'Photosphere',
-          'Corona',
-          'Chromosphere'
-        ],
-        a: 2,
-        explain: 'The corona is the Sun\'s outer atmosphere, visible as a white halo during eclipses. It\'s millions of degrees hot - even hotter than the Sun\'s surface!'
       }
     ]
   },
@@ -121,28 +99,6 @@ export const quizCategories = [
         ],
         a: 2,
         explain: 'Strong flares ionize Earth\'s upper atmosphere, causing radio blackouts (especially HF radio) and GPS errors. Pilots and sailors are affected!'
-      },
-      {
-        q: 'The most powerful solar flare ever recorded happened in...',
-        options: [
-          '1859 (Carrington Event)',
-          '2003 (Halloween Storms)',
-          '1989 (Quebec Blackout)',
-          '2024 (May Superstorm)'
-        ],
-        a: 1,
-        explain: 'The Halloween Storms of 2003 produced an X28 flare - the largest ever measured! Though the 1859 Carrington Event was likely even stronger (estimated X45+).'
-      },
-      {
-        q: 'Which NASA satellite monitors the Sun for solar flares 24/7?',
-        options: [
-          'Hubble Space Telescope',
-          'James Webb Space Telescope',
-          'Solar Dynamics Observatory (SDO)',
-          'International Space Station'
-        ],
-        a: 2,
-        explain: 'NASA\'s SDO takes pictures of the Sun every 0.75 seconds in 10 different wavelengths, helping scientists predict space weather!'
       }
     ]
   },
@@ -184,17 +140,6 @@ export const quizCategories = [
         explain: 'CMEs compress Earth\'s magnetosphere, triggering geomagnetic storms that can create auroras, disrupt satellites, and affect power grids!'
       },
       {
-        q: 'The direction of a CME\'s magnetic field determines...',
-        options: [
-          'Its color',
-          'How strongly it affects Earth (southward Bz is worst)',
-          'The weather on Earth',
-          'Ocean currents'
-        ],
-        a: 1,
-        explain: 'When a CME\'s magnetic field points south (negative Bz), it connects with Earth\'s northward field, transferring more energy and causing stronger storms!'
-      },
-      {
         q: 'Which famous event caused a 9-hour blackout in Quebec, Canada?',
         options: [
           'A hurricane',
@@ -204,17 +149,6 @@ export const quizCategories = [
         ],
         a: 1,
         explain: 'The March 13, 1989 geomagnetic storm (Kp 9) caused Quebec\'s power grid to collapse in 90 seconds, leaving 6 million people without power for 9 hours!'
-      },
-      {
-        q: 'Can CMEs reach other planets?',
-        options: [
-          'No, they only affect Earth',
-          'Yes! CMEs can hit Mars, Venus, and even outer planets',
-          'Only the Moon',
-          'Only Mercury'
-        ],
-        a: 1,
-        explain: 'CMEs spread out in a cone from the Sun and can affect multiple planets! NASA\'s MAVEN spacecraft studies how CMEs impact Mars\' atmosphere.'
       }
     ]
   },
@@ -249,28 +183,6 @@ export const quizCategories = [
         ],
         a: 2,
         explain: 'During extreme Kp 9 storms, the auroral oval expands so much that people in Mexico, Florida, and even the Caribbean can see auroras!'
-      },
-      {
-        q: 'What does "Dst" measure in space weather?',
-        options: [
-          'Distance to the Sun',
-          'The strength of Earth\'s magnetic field disturbance',
-          'Solar temperature',
-          'Asteroid distance'
-        ],
-        a: 1,
-        explain: 'Dst (Disturbance storm time) measures how much a storm compresses Earth\'s magnetic field. Values below -100 nT indicate a major storm!'
-      },
-      {
-        q: 'The 1859 Carrington Event had an estimated Dst of...',
-        options: [
-          '-50 nT (weak)',
-          '-300 nT (strong)',
-          '-1,760 nT (extreme!)',
-          '0 nT (no storm)'
-        ],
-        a: 2,
-        explain: 'The Carrington Event\'s Dst of -1,760 nT was the strongest ever recorded! For comparison, the 2003 Halloween Storms were -383 nT.'
       },
       {
         q: 'Which technology is MOST vulnerable to geomagnetic storms?',
@@ -321,28 +233,6 @@ export const quizCategories = [
         ],
         a: 1,
         explain: 'The fastest SEPs can reach Earth in 15-30 minutes! This is faster than CMEs (1-3 days) but slower than X-rays (8 minutes).'
-      },
-      {
-        q: 'During a major SEP event, airlines may...',
-        options: [
-          'Cancel all flights',
-          'Reroute polar flights to lower latitudes',
-          'Only fly at night',
-          'Nothing - planes are unaffected'
-        ],
-        a: 1,
-        explain: 'Polar routes get more radiation exposure. During strong SEP events, flights are rerouted away from poles to protect passengers and crew!'
-      },
-      {
-        q: 'Which NASA mission studies how SEPs affect Mars?',
-        options: [
-          'Hubble',
-          'MAVEN (Mars Atmosphere and Volatile EvolutioN)',
-          'Voyager',
-          'Apollo'
-        ],
-        a: 1,
-        explain: 'MAVEN studies how solar wind and SEPs strip away Mars\' atmosphere over time. Mars has no magnetic field to protect it like Earth does!'
       }
     ]
   },
@@ -393,17 +283,6 @@ export const quizCategories = [
         ],
         a: 1,
         explain: 'Satellites can turn sensitive instruments off, reorient to minimize radiation exposure, and wait out the storm in a protective configuration!'
-      },
-      {
-        q: 'The International Space Station orbits at about 400 km altitude. Is it protected from space weather?',
-        options: [
-          'Yes, completely safe',
-          'Partially - Earth\'s magnetic field helps, but astronauts still monitor radiation',
-          'No protection at all',
-          'Only during the day'
-        ],
-        a: 1,
-        explain: 'The ISS is within Earth\'s magnetosphere, which provides protection. But during major storms, astronauts shelter in more shielded areas!'
       },
       {
         q: 'Auroras mean Wi-Fi routers and electronics are in danger.',

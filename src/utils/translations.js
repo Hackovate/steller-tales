@@ -133,6 +133,8 @@ export const translations = {
         spaceWeatherMood: "Space Weather Mood:",
         viewCredits: "View Credits ✨",
         creditsAndAcknowledgments: "Credits & Acknowledgments",
+        loadingSpaceData: "Loading Space Data...",
+        fetchingLatestData: "Fetching the latest space weather information...",
         team: "Team",
         dataAndAPIs: "Data & APIs",
         toolsAndSupport: "Tools & Support",

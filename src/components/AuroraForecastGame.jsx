@@ -31,20 +31,61 @@ const AuroraForecastGame = ({ onClose }) => {
       const southBlob = await southResponse.blob();
       const southUrl = URL.createObjectURL(southBlob);
       
-      // Fetch HPI data
-      const hpiResponse = await fetch('https://services.swpc.noaa.gov/json/ovation_aurora_latest.json');
-      const hpiData = await hpiResponse.json();
+      // Fetch aurora coordinate data and calculate HPI
+      // The API returns an array of [longitude, latitude, intensity] points
+      const coordResponse = await fetch('https://services.swpc.noaa.gov/json/ovation_aurora_latest.json');
+      const coordData = await coordResponse.json();
+      
+      // Calculate approximate HPI from the coordinate data
+      const calculateHPI = (coords) => {
+        if (!Array.isArray(coords) || coords.length === 0) return 0;
+        
+        // Filter by hemisphere and sum intensities
+        let totalIntensity = 0;
+        let count = 0;
+        
+        coords.forEach(point => {
+          if (Array.isArray(point) && point.length >= 3) {
+            const intensity = point[2]; // Third value is intensity
+            if (typeof intensity === 'number' && intensity > 0) {
+              totalIntensity += intensity;
+              count++;
+            }
+          }
+        });
+        
+        // Convert to GW (HPI is typically 0-200 GW range)
+        // Scale the sum appropriately
+        const hpiValue = count > 0 ? Math.round(totalIntensity / 100) : 0;
+        return hpiValue;
+      };
+      
+      // The API returns a flat array, split by hemisphere
+      // Latitude positive = north, negative = south
+      let northPoints = [];
+      let southPoints = [];
+      
+      if (Array.isArray(coordData)) {
+        northPoints = coordData.filter(p => Array.isArray(p) && p.length >= 3 && p[1] >= 0);
+        southPoints = coordData.filter(p => Array.isArray(p) && p.length >= 3 && p[1] < 0);
+      } else if (coordData.coordinates && Array.isArray(coordData.coordinates)) {
+        northPoints = coordData.coordinates.filter(p => Array.isArray(p) && p.length >= 3 && p[1] >= 0);
+        southPoints = coordData.coordinates.filter(p => Array.isArray(p) && p.length >= 3 && p[1] < 0);
+      }
+      
+      const northHPI = calculateHPI(northPoints);
+      const southHPI = calculateHPI(southPoints);
       
       setNorthernData({
         imageUrl: northUrl,
-        hpi: hpiData.north?.hpi || 'N/A',
-        forecastTime: hpiData.north?.forecast_time || 'N/A'
+        hpi: northHPI,
+        forecastTime: new Date().toISOString()
       });
       
       setSouthernData({
         imageUrl: southUrl,
-        hpi: hpiData.south?.hpi || 'N/A', 
-        forecastTime: hpiData.south?.forecast_time || 'N/A'
+        hpi: southHPI, 
+        forecastTime: new Date().toISOString()
       });
       
       setLastUpdate(new Date().toLocaleTimeString());
@@ -68,17 +109,7 @@ const AuroraForecastGame = ({ onClose }) => {
     return () => clearInterval(interval);
   }, []);
 
-  const getAuroraIntensity = (hpi) => {
-    const value = parseFloat(hpi);
-    if (value >= 100) return { level: 'Very High', color: 'text-red-400', description: 'Spectacular aurora likely!' };
-    if (value >= 50) return { level: 'High', color: 'text-orange-400', description: 'Strong aurora possible' };
-    if (value >= 20) return { level: 'Moderate', color: 'text-yellow-400', description: 'Aurora may be visible' };
-    if (value >= 10) return { level: 'Low', color: 'text-blue-400', description: 'Weak aurora possible' };
-    return { level: 'Very Low', color: 'text-gray-400', description: 'Aurora unlikely' };
-  };
-
   const currentData = selectedHemisphere === 'northern' ? northernData : southernData;
-  const intensity = currentData ? getAuroraIntensity(currentData.hpi) : null;
 
   const handleHotspotClick = (hotspot) => {
     setSelectedHotspot(hotspot);
@@ -188,29 +219,6 @@ const AuroraForecastGame = ({ onClose }) => {
                   </div>
                 )}
               </div>
-
-              {/* HPI and Intensity Info */}
-              <div className="grid grid-cols-1 gap-3 mt-4">
-                <div className="bg-space-card/50 rounded-lg p-4 border border-accent-blue/20">
-                  <h5 className="text-accent-blue font-bold mb-2 text-lg">{t('hemisphericPowerIndex')}</h5>
-                  <div className="text-3xl font-bold text-accent-yellow mb-2">
-                    {currentData.hpi} GW
-                  </div>
-                  <div className="text-sm text-text-gray">
-                    Range: 5-200 GW (higher = more intense aurora)
-                  </div>
-                </div>
-
-                <div className="bg-space-card/50 rounded-lg p-4 border border-accent-purple/20">
-                  <h5 className="text-accent-blue font-bold mb-2 text-lg">{t('auroraIntensity')}</h5>
-                  <div className={`text-2xl font-bold ${intensity?.color} mb-2`}>
-                    {intensity?.level}
-                  </div>
-                  <div className="text-sm text-text-light">
-                    {intensity?.description}
-                  </div>
-                </div>
-              </div>
             </div>
 
             {/* Educational Information */}
@@ -261,7 +269,7 @@ const AuroraForecastGame = ({ onClose }) => {
             </div>
 
             {/* Data Source Info */}
-            <div className="text-center text-sm text-text-gray border-t border-accent-purple/20 pt-6 bg-space-card/20 rounded-lg p-4">
+            <div className="text-center text-sm text-text-gray border-t border-accent-purple/20 pt-4 pb-2 bg-space-card/20 rounded-lg p-4 mb-16">
               <div className="space-y-1">
                 <p className="font-medium">{t('dataSource')}</p>
                 <p>{t('modelInfo')}</p>

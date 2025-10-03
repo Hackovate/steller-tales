@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
 
 const UserContext = createContext();
 
@@ -48,7 +48,7 @@ export const UserProvider = ({ children }) => {
     }
   }, [currentUser, userCoins, currentLanguage, completedStories, achievements, streakDays]);
 
-  const createUser = (userData) => {
+  const createUser = useCallback((userData) => {
     const newUser = {
       ...userData,
       id: Date.now(),
@@ -59,13 +59,13 @@ export const UserProvider = ({ children }) => {
     setCurrentUser(newUser);
     setUserCoins(100);
     setCurrentLanguage(userData.language || 'en');
-  };
+  }, []);
 
-  const updateUserCoins = (amount) => {
+  const updateUserCoins = useCallback((amount) => {
     setUserCoins(prev => Math.max(0, prev + amount));
-  };
+  }, []);
 
-  const addCompletedStory = (storyId) => {
+  const addCompletedStory = useCallback((storyId) => {
     setCompletedStories(prev => {
       if (!prev.includes(storyId)) {
         updateUserCoins(20); // Reward for completing story
@@ -73,9 +73,9 @@ export const UserProvider = ({ children }) => {
       }
       return prev;
     });
-  };
+  }, [updateUserCoins]);
 
-  const addAchievement = (achievement) => {
+  const addAchievement = useCallback((achievement) => {
     setAchievements(prev => {
       if (!prev.some(a => a.id === achievement.id)) {
         updateUserCoins(achievement.reward || 50);
@@ -83,9 +83,9 @@ export const UserProvider = ({ children }) => {
       }
       return prev;
     });
-  };
+  }, [updateUserCoins]);
 
-  const logout = () => {
+  const logout = useCallback(() => {
     setCurrentUser(null);
     setUserCoins(100);
     setCurrentLanguage('en');
@@ -93,9 +93,9 @@ export const UserProvider = ({ children }) => {
     setAchievements([]);
     setStreakDays(0);
     localStorage.removeItem('stellarTalesUser');
-  };
+  }, []);
 
-  const value = {
+  const value = useMemo(() => ({
     currentUser,
     userCoins,
     currentLanguage,
@@ -108,7 +108,19 @@ export const UserProvider = ({ children }) => {
     addAchievement,
     setCurrentLanguage,
     logout
-  };
+  }), [
+    currentUser,
+    userCoins,
+    currentLanguage,
+    completedStories,
+    achievements,
+    streakDays,
+    createUser,
+    updateUserCoins,
+    addCompletedStory,
+    addAchievement,
+    logout
+  ]);
 
   return (
     <UserContext.Provider value={value}>

@@ -26,14 +26,14 @@ const QuizCompletionModal = ({
       return {
         emoji: '🌟',
         title: t('excellentWork') || 'Excellent Work!',
-        message: t('quizExcellentMessage') || 'Outstanding! You really know your space weather!',
+        message: '',
         color: 'text-accent-yellow'
       };
     } else if (isGood) {
       return {
         emoji: '🎉',
         title: t('greatJob') || 'Great Job!',
-        message: t('quizGoodMessage') || 'Well done! You have a solid understanding of space weather.',
+        message: '',
         color: 'text-accent-blue'
       };
     } else {
@@ -54,12 +54,9 @@ const QuizCompletionModal = ({
         {/* Header */}
         <div className="text-center mb-6">
           <div className="text-6xl mb-4">{scoreInfo.emoji}</div>
-          <h2 className={`text-2xl font-bold mb-2 ${scoreInfo.color}`}>
+          <h2 className={`text-2xl font-bold ${scoreInfo.color}`}>
             {scoreInfo.title}
           </h2>
-          <p className="text-text-light text-sm mb-4">
-            {scoreInfo.message}
-          </p>
         </div>
 
         {/* Score Display */}
@@ -134,13 +131,6 @@ const QuizCompletionModal = ({
             {t('backToGames') || 'Back to Games'}
           </button>
         </div>
-
-        {/* Encouragement Message (only when passed) */}
-        {passed && (
-          <div className="text-center mt-4 text-xs text-text-gray">
-            <p>{t('quizPassedEncouragement') || 'Keep exploring the wonders of space weather!'}</p>
-          </div>
-        )}
       </div>
     </div>
   );

@@ -34,6 +34,19 @@ export default defineConfig({
           if (id.includes('src/components/Quiz') || id.includes('src/data/spaceWeatherQuiz')) {
             return 'quizzes';
           }
+          // Wiki data
+          if (id.includes('src/data/wikiEntries') || id.includes('src/pages/WikiPage') || id.includes('src/pages/WikiDetailPage')) {
+            return 'wiki';
+          }
+          // Stories data
+          if (id.includes('src/pages/StoriesPage') || id.includes('src/data/stories')) {
+            return 'stories';
+          }
+          // Dashboard components
+          if (id.includes('src/pages/DashboardPage') || id.includes('src/components/TodayAtAGlance') || 
+              id.includes('src/components/SolarWindGauges') || id.includes('src/components/EventsTimeline')) {
+            return 'dashboard';
+          }
           // Other node_modules
           if (id.includes('node_modules')) {
             return 'vendor-misc';
@@ -48,12 +61,17 @@ export default defineConfig({
       compress: {
         drop_console: true, // Remove console.logs in production
         drop_debugger: true,
+        pure_funcs: ['console.log', 'console.info', 'console.debug'], // Remove specific console functions
       },
     },
     // Enable source maps for production debugging (optional)
     sourcemap: false,
     // Optimize CSS
     cssCodeSplit: true,
+    // Target modern browsers for better performance
+    target: 'esnext',
+    // Enable tree shaking
+    treeshake: true,
   },
   define: {
     // NASA API key should be set in .env file as VITE_NASA_API_KEY

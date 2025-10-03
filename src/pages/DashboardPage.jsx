@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React from 'react';
+import React, { memo, useCallback, useMemo } from 'react';
 import { BsCoin } from 'react-icons/bs';
 import { useUser } from '../context/UserContext';
 import { useApp } from '../context/AppContext';
@@ -9,10 +9,11 @@ import EventsTimeline from '../components/EventsTimeline';
 import TodayAtAGlance from '../components/TodayAtAGlance';
 import { useLanguage } from '../context/LanguageContext';
 
-const DashboardPage = () => {
+const DashboardPage = memo(() => {
   const { currentUser, achievements, streakDays } = useUser();
-  const { spaceWeatherData, mood, apod } = useApp();
+  const { spaceWeatherData, mood, apod, fetchSpaceWeatherData, isLoading } = useApp();
   const [showCredits, setShowCredits] = React.useState(false);
+  const [hasLoadedData, setHasLoadedData] = React.useState(false);
   const { t } = useLanguage();
   
   // Get actual coins from localStorage (synced with StoriesPage)
@@ -20,7 +21,7 @@ const DashboardPage = () => {
   const [completedStoriesCount, setCompletedStoriesCount] = React.useState(0);
 
   // Function to refresh data from localStorage
-  const refreshData = React.useCallback(() => {
+  const refreshData = useCallback(() => {
     const coins = parseInt(localStorage.getItem('userCoins') || '0');
     setActualCoins(coins);
 
@@ -30,6 +31,15 @@ const DashboardPage = () => {
       setCompletedStoriesCount(Object.keys(scores).length);
     }
   }, []);
+
+  // Load API data only when dashboard is visited
+  React.useEffect(() => {
+    if (!hasLoadedData) {
+      fetchSpaceWeatherData().then(() => {
+        setHasLoadedData(true);
+      });
+    }
+  }, [hasLoadedData, fetchSpaceWeatherData]);
 
   // Initial load and refresh when component mounts
   React.useEffect(() => {
@@ -58,6 +68,16 @@ const DashboardPage = () => {
     return () => window.removeEventListener('focus', handleFocus);
   }, [refreshData]);
 
+  // Memoize expensive calculations
+  const progressStats = useMemo(() => ({
+    completedStoriesCount,
+    actualCoins
+  }), [completedStoriesCount, actualCoins]);
+
+  const handleCreditsToggle = useCallback(() => {
+    setShowCredits(prev => !prev);
+  }, []);
+
 
   // Recent Activity section removed per request
 
@@ -83,12 +103,12 @@ const DashboardPage = () => {
         <div className="grid grid-cols-2 gap-3 mb-6 max-w-[400px] mx-auto">
           <div className="bg-gradient-to-br from-[#16213e]/95 to-[#1a1a2e]/95 backdrop-blur-md rounded-xl p-4 text-center border border-accent-purple/30 shadow-lg hover:shadow-xl transition-all hover:scale-102 animate-in fade-in slide-in-from-left duration-500">
             <div className="text-2xl mb-1 animate-float">📖</div>
-            <div className="text-xl font-bold text-accent-yellow">{completedStoriesCount}</div>
+            <div className="text-xl font-bold text-accent-yellow">{progressStats.completedStoriesCount}</div>
             <div className="text-text-light text-xs">{t('storiesComplete')}</div>
           </div>
           <div className="bg-gradient-to-br from-[#16213e]/95 to-[#1a1a2e]/95 backdrop-blur-md rounded-xl p-4 text-center border border-accent-purple/30 shadow-lg hover:shadow-xl transition-all hover:scale-102 animate-in fade-in slide-in-from-right duration-500 delay-75">
             <div className="text-2xl mb-1 animate-float text-accent-yellow flex justify-center"><BsCoin /></div>
-            <div className="text-xl font-bold text-accent-yellow">{actualCoins}</div>
+            <div className="text-xl font-bold text-accent-yellow">{progressStats.actualCoins}</div>
             <div className="text-text-light text-xs">{t('spaceCoinsLabel')}</div>
           </div>
         </div>
@@ -109,9 +129,19 @@ const DashboardPage = () => {
 
         {/* Live Space Weather Cards */}
         <div className="grid grid-cols-1 gap-3 mb-6 max-w-lg mx-auto">
-          <TodayAtAGlance />
-          <SolarWindGauges />
-          <EventsTimeline />
+          {isLoading && !hasLoadedData ? (
+            <div className="bg-gradient-to-br from-[#16213e]/95 to-[#1a1a2e]/95 rounded-xl p-6 border border-accent-purple/30 shadow-lg text-center">
+              <div className="animate-spin text-4xl mb-3">🌌</div>
+              <div className="text-accent-blue font-bold">{t('loadingSpaceData')}</div>
+              <div className="text-text-light text-sm mt-2">{t('fetchingLatestData')}</div>
+            </div>
+          ) : (
+            <>
+              <TodayAtAGlance />
+              <SolarWindGauges />
+              <EventsTimeline />
+            </>
+          )}
         </div>
 
         {/* Recent Activity removed */}
@@ -120,7 +150,7 @@ const DashboardPage = () => {
         {/* Credits trigger at bottom */}
         <div className="mt-6 mb-20 flex justify-center">
           <button
-            onClick={() => setShowCredits(true)}
+            onClick={handleCreditsToggle}
             className="px-4 py-2 rounded-full bg-gradient-to-r from-accent-purple to-accent-blue text-white text-sm font-bold shadow-lg border border-white/10 active:scale-95 transition-all"
           >
             {t('viewCredits')}
@@ -130,7 +160,7 @@ const DashboardPage = () => {
         {/* Credits Modal */}
         {showCredits && (
           <div className="fixed inset-0 z-[80] flex items-start justify-center p-3 pt-8">
-            <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setShowCredits(false)} />
+            <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={handleCreditsToggle} />
             <div className="relative w-full max-w-sm rounded-3xl border-2 border-accent-orange/40 shadow-2xl overflow-hidden bg-gradient-to-br from-space-card/95 via-space-blue/90 to-accent-purple/30">
               {/* header */}
               <div className="px-4 py-3 bg-gradient-to-r from-accent-purple/95 to-accent-blue/95 text-white flex items-center justify-between">
@@ -139,7 +169,7 @@ const DashboardPage = () => {
                   <h3 className="text-base font-extrabold tracking-wide">{t('creditsAndAcknowledgments')}</h3>
                 </div>
                 <button
-                  onClick={() => setShowCredits(false)}
+                  onClick={handleCreditsToggle}
                   className="w-9 h-9 rounded-full bg-red-500 active:bg-red-600 text-white text-xl font-bold flex items-center justify-center shadow"
                   aria-label="Close credits"
                 >
@@ -204,6 +234,6 @@ const DashboardPage = () => {
       </div>
     </div>
   );
-};
+});
 
 export default DashboardPage;

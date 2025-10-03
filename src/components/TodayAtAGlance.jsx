@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, memo, useCallback, useMemo } from 'react';
 import { useApp } from '../context/AppContext';
 import { useLanguage } from '../context/LanguageContext';
 import { nasaAPI } from '../utils/nasaAPI';
@@ -7,11 +7,12 @@ import { compareFlareToHistory } from '../data/historicalAuroraEvents';
 
 const POLL_MS = 90000;
 
-const TodayAtAGlance = () => {
+const TodayAtAGlance = memo(() => {
   const { spaceWeatherData } = useApp();
   const { t } = useLanguage();
   const [state, setState] = useState({ flare: '—', kp: null, wind: { temperature: null }, aurora: null, updated: null });
   const [historicalComparison, setHistoricalComparison] = useState(null);
+  const [hasLoaded, setHasLoaded] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -35,6 +36,7 @@ const TodayAtAGlance = () => {
         
         if (!mounted) return;
         setState({ flare: flareClass || 'B/A', kp, wind: { temperature }, aurora: kp ? auroraChance : null, updated: new Date().toISOString() });
+        setHasLoaded(true);
         
         // Compare to historical events
         if (flareClass && flareClass !== 'B/A') {
@@ -51,14 +53,22 @@ const TodayAtAGlance = () => {
             aurora: 'Low', 
             updated: new Date().toISOString() 
           });
+          setHasLoaded(true);
         }
       }
     };
-    fetchData();
-    const t = setInterval(fetchData, POLL_MS);
-    return () => { mounted = false; clearInterval(t); };
+    
+    // Start loading data when component mounts (dashboard is visited)
+    if (!hasLoaded) {
+      setHasLoaded(true);
+      fetchData();
+      const t = setInterval(fetchData, POLL_MS);
+      return () => { mounted = false; clearInterval(t); };
+    }
+    
+    return () => { mounted = false; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [spaceWeatherData, hasLoaded]);
 
   // Aurora chance shown here; detailed aurora map is in Games tab
 
@@ -119,7 +129,7 @@ const TodayAtAGlance = () => {
       {state.updated && <div className="text-xs text-text-gray mt-2">{t('lastUpdated')} {new Date(state.updated).toLocaleTimeString()}</div>}
     </div>
   );
-};
+});
 
 export default TodayAtAGlance;
 

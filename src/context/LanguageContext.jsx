@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
 import i18n from '../i18n';
 import { translations } from '../utils/translations';
 
@@ -27,20 +27,20 @@ export const LanguageProvider = ({ children }) => {
     };
   }, []);
 
-  const switchLanguage = (newLanguage) => {
+  const switchLanguage = useCallback((newLanguage) => {
     if (translations[newLanguage]) {
       i18n.changeLanguage(newLanguage);
     }
-  };
+  }, []);
 
-  const t = (key, options) => i18n.t(key, options);
+  const t = useCallback((key, options) => i18n.t(key, options), []);
 
-  const value = {
+  const value = useMemo(() => ({
     currentLanguage,
     switchLanguage,
     t,
     translations: translations[currentLanguage] || translations.en
-  };
+  }), [currentLanguage, switchLanguage, t]);
 
   return (
     <LanguageContext.Provider value={value}>

@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, memo, useCallback, useMemo } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { getSolarWindMag1Day, getSolarWindPlasma1Day } from '../utils/swpcAPI';
 
 const POLL_MS = 60000;
 
-const Gauge = ({ label, value, unit, state }) => (
+const Gauge = memo(({ label, value, unit, state }) => (
   <div className="flex-1 bg-space-card/50 rounded-lg p-2 border border-accent-purple/20 text-center">
     <div className="text-xs text-text-gray mb-1">{label}</div>
     <div className={`text-lg font-bold ${state.color}`}>{value ?? '—'} {unit}</div>
     <div className="text-sm">{state.emoji}</div>
   </div>
-);
+));
 
 const classify = ({ speed, density, bz }) => {
   // Kid-friendly states
@@ -20,9 +20,10 @@ const classify = ({ speed, density, bz }) => {
   return { speedState, densityState, bzState };
 };
 
-const SolarWindGauges = () => {
+const SolarWindGauges = memo(() => {
   const { t } = useLanguage();
   const [latest, setLatest] = useState({ speed: null, density: null, bz: null, time: null });
+  const [hasLoaded, setHasLoaded] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -39,19 +40,28 @@ const SolarWindGauges = () => {
         const density = lastP ? Number(lastP[1]) : null; // Np, /cm^3
         if (!mounted) return;
         setLatest({ speed, density, bz, time: lastP?.[0] || lastM?.[0] });
+        setHasLoaded(true);
       } catch (error) {
         // Keep existing data if available, or use fallback values
         if (mounted && latest.speed === null) {
           setLatest({ speed: 400, density: 5, bz: -2, time: new Date().toISOString() });
+          setHasLoaded(true);
         }
       }
     };
-    fetchData();
-    const t = setInterval(fetchData, POLL_MS);
-    return () => { mounted = false; clearInterval(t); };
-  }, []);
+    
+    // Start loading data when component mounts (dashboard is visited)
+    if (!hasLoaded) {
+      setHasLoaded(true);
+      fetchData();
+      const t = setInterval(fetchData, POLL_MS);
+      return () => { mounted = false; clearInterval(t); };
+    }
+    
+    return () => { mounted = false; };
+  }, [hasLoaded, latest.speed]);
 
-  const { speedState, densityState, bzState } = classify(latest);
+  const { speedState, densityState, bzState } = useMemo(() => classify(latest), [latest]);
 
   return (
     <div className="bg-gradient-to-br from-[#16213e]/95 to-[#1a1a2e]/95 rounded-xl p-3 border border-accent-purple/30 shadow-lg hover:shadow-xl transition-all hover:scale-101">
@@ -69,7 +79,7 @@ const SolarWindGauges = () => {
       )}
     </div>
   );
-};
+});
 
 export default SolarWindGauges;
 
