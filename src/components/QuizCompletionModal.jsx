@@ -135,14 +135,12 @@ const QuizCompletionModal = ({
           </button>
         </div>
 
-        {/* Encouragement Message */}
-        <div className="text-center mt-4 text-xs text-text-gray">
-          {passed ? (
+        {/* Encouragement Message (only when passed) */}
+        {passed && (
+          <div className="text-center mt-4 text-xs text-text-gray">
             <p>{t('quizPassedEncouragement') || 'Keep exploring the wonders of space weather!'}</p>
-          ) : (
-            <p>{t('quizFailedEncouragement') || 'Every expert was once a beginner. Keep learning!'}</p>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );
