@@ -149,7 +149,17 @@ const SolarParticleShooter = ({ onClose }) => {
       shipRef.current.x = clamp(canvasX, 20, WIDTH - 20);
     };
     const onDown = (e) => { e.preventDefault(); moveFromEvent(e); };
-    const onMove = (e) => { e.preventDefault(); moveFromEvent(e); };
+    const onMove = (e) => { 
+      e.preventDefault(); 
+      // Throttle move events for better mobile performance
+      if (!moveFromEvent.rafPending) {
+        moveFromEvent.rafPending = true;
+        requestAnimationFrame(() => {
+          moveFromEvent(e);
+          moveFromEvent.rafPending = false;
+        });
+      }
+    };
     const onUp = () => { };
     const canvas = canvasRef.current;
     if (canvas) {
@@ -237,11 +247,18 @@ const SolarParticleShooter = ({ onClose }) => {
           });
         }
 
-        // spawn power-ups
-        if (ts - powerUpSpawnRef.current > 6000 + Math.random() * 3000) {
+        // spawn power-ups (more frequently)
+        if (ts - powerUpSpawnRef.current > 3000 + Math.random() * 2000) {
           powerUpSpawnRef.current = ts;
-          const powerUpTypes = ['health', 'rapid', 'triple', 'spread', 'stopfire'];
-          const randomType = powerUpTypes[Math.floor(Math.random() * powerUpTypes.length)];
+          // Stop fire is less frequent (20% chance), other power-ups share remaining 80%
+          const rand = Math.random();
+          let randomType;
+          if (rand < 0.2) {
+            randomType = 'stopfire'; // 20% chance
+          } else {
+            const normalPowerUps = ['health', 'rapid', 'triple', 'spread'];
+            randomType = normalPowerUps[Math.floor(Math.random() * normalPowerUps.length)];
+          }
           setPowerUps(prev => [...prev, { x: 20 + Math.random() * (WIDTH - 40), y: -10, vy: 40, type: randomType }]);
         }
         // move bullets
@@ -852,7 +869,7 @@ const SolarParticleShooter = ({ onClose }) => {
           <h3 className="text-xl font-bold text-accent-blue">Particle Shooter</h3>
           <button onClick={onClose} className="text-text-gray hover:text-text-light text-2xl">×</button>
         </div>
-        <canvas ref={canvasRef} width={WIDTH} height={HEIGHT} className="w-full rounded-xl border border-accent-purple/20 bg-[#0f0f23] touch-none select-none" />
+        <canvas ref={canvasRef} width={WIDTH} height={HEIGHT} className="w-full rounded-xl border border-accent-purple/20 bg-[#0f0f23] touch-none select-none" style={{ touchAction: 'none' }} />
         <div className="text-xs text-text-gray mt-2">Move: ← → or drag • Pause: P key or ⏸ button • Auto-fire enabled • Collect power-ups: + (health), R (rapid), 3 (triple), S (spread), ⏸ (stop fire)</div>
         
       </div>
