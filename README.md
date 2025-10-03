@@ -19,6 +19,7 @@
 - [Technology Stack](#%EF%B8%8F-technology-stack)
 - [Space Weather Data Sources](#-space-weather-data-sources)
 - [Internationalization](#-internationalization)
+- [Documentation](#-documentation)
 - [License](#-license)
 - [Acknowledgments](#-acknowledgments)
 
@@ -177,6 +178,26 @@ The app integrates **7 real-time data sources** for comprehensive space weather 
 ---
 
 ## 🌐 Internationalization
+---
+
+## 📚 Documentation
+
+- Full project documentation: [`Documentation.md`](./Documentation.md)
+  - Project Summary
+  - Demonstration
+  - How We Addressed the Challenge
+  - How We Developed This Project
+  - Goals and Important Note
+  - Highlighted Features and Mini‑Games
+  - App Walkthrough and Wiki Coverage
+  - Architecture Overview and Directory Structure
+  - Data Sources & Attribution
+  - Setup, Caching & Offline, Accessibility
+  - Team and App Interface Gallery
+
+Note: App interface images are located in `public/app_interface/` and referenced inside the documentation.
+
+---
 
 The app supports multiple languages with i18next:
 

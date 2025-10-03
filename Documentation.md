@@ -1,0 +1,227 @@
+# 🌌 Stellar Tales — 2025 NASA Space Apps Challenge
+
+- **Challenge**: Stellar Stories: Space Weather Through the Eyes of Earthlings  
+- **Team**: Team Nomads (6 Members)  
+- **Deployment**: `https://steller-tales.vercel.app`
+
+---
+
+## 📘 Project Summary
+
+Stellar Tales is an educational Progressive Web App (PWA) for kids (ages 6–15) to explore how space weather impacts everyday life. It blends story‑driven learning, a wiki, interactive mini‑games, and live NASA/NOAA space weather data to make complex science approachable and exciting.
+
+---
+
+## 🎥 Project Demonstration
+
+- Live App: `https://steller-tales.vercel.app`  
+- Source: See repository README for setup and stack
+
+---
+
+## 🧭 How We Addressed the Challenge
+
+We built a cross‑platform PWA that turns real space weather data into kid‑friendly narratives and activities:
+
+- Role‑based stories show practical impacts (pilot, farmer, fisherman, scientist, astronaut, electrician)
+- Interactive dashboard visualizes solar wind, flares, Kp index, aurora maps
+- Games and quizzes reinforce learning with instant feedback
+- Multilingual interface broadens accessibility
+
+---
+
+## 🏗️ How We Developed This Project
+
+- Frontend with React + Vite and Tailwind for a fast, mobile‑first UI
+- React Context for app, user, and language state management
+- Data layer integrates NASA DONKI, NOAA/SWPC, APOD, and NASA Images APIs
+- Deployed on Vercel with environment‑based configuration
+ - Progressive Web App (PWA): installable experience with app‑like UX
+ - Internationalization: multi‑lingual UI (English, Bangla, Hindi, French, Spanish)
+
+---
+
+## 🎯 Goals
+
+- Educate: Explain how solar storms and flares affect daily life
+- Engage: Use stories, visuals, and games to motivate learning
+- Empower: Integrate real NASA/NOAA data for authenticity
+- Inspire: Spark curiosity about space science and STEM careers
+
+---
+
+## 🌟 Highlighted Features
+
+- Progressive Web App: Offline support, responsive, fast
+- Role‑Based Impact Stories: Six professions with tailored scenarios
+- Real‑Time Dashboard: Solar wind gauges, alerts, flares, Kp forecast
+- Aurora Maps: Live hemispheric maps from NOAA SWPC
+- Mini‑Games: Particle Shooter, Shield the Grid, quizzes
+- Visual Gallery: NASA APOD and imagery with fallbacks
+- Multilingual: English, Bangla, Hindi, French, Spanish
+
+---
+
+## 🎮 Mini‑Games
+
+- Shield the Grid — Strategy/Tower Defense; protect power infrastructure from geomagnetic storms
+- Solar Particle Shooter — Action/Arcade; navigate solar particle streams and learn particle behavior
+- Visual Learning Game — Recognize solar phenomena with NASA imagery (adaptive difficulty)
+- Space Weather Quiz — Multiple‑choice and true/false with explanations
+
+---
+
+## 📱 App Walkthrough
+
+1) Onboarding → Name, age, language selection  
+2) Home → Trivia, highlights, navigation to Stories, Dashboard, Wiki, Games  
+3) Stories → Profession‑based narratives with visuals and impacts  
+4) Dashboard → Live alerts, solar wind indicators, aurora forecasts  
+5) Wiki → Solar phenomena, celestial events, NASA missions  
+6) Games → Fun interactive learning experiences
+
+---
+
+## 🧩 Wiki Coverage
+
+- Solar Phenomena: Flares, CMEs, Solar Wind, Sunspot Cycles  
+- Celestial Events: Aurora, Geomagnetic Storms, Magnetosphere  
+- NASA Missions: Parker Solar Probe, SDO, STEREO, SOHO
+
+---
+
+## 🛠 Architecture Overview
+
+- Framework: React 18 + Vite  
+- Styling: Tailwind CSS (mobile‑first, space theme)  
+- State: React Context (App, User, Language)  
+- Data: NASA DONKI, APOD, NASA Images, NOAA SWPC  
+- Deploy: Vercel
+
+Data flow: NASA/NOAA APIs → `/src/utils/nasaAPI.js` & `/src/utils/swpcAPI.js` → Context → Components → Pages
+
+---
+
+## 📂 Directory Structure
+
+root/  
+ ├── public/ (PWA assets, logos, story/wiki media)  
+ │   ├── manifest.json  
+ │   ├── sw.js  
+ │   ├── wiki/ (images/videos for wiki)  
+ │   └── stories/ (role‑based story images)  
+ ├── src/  
+ │   ├── pages/ (Home, Stories, Dashboard, Wiki, Games)  
+ │   ├── components/ (UI & feature components)  
+ │   ├── context/ (App, User, Language)  
+ │   ├── data/ (Story & wiki content, quizzes)  
+ │   ├── utils/ (API integration & helpers)  
+ │   └── assets/ (Icons, static vectors)  
+ ├── .env  
+ ├── vite.config.js  
+ └── package.json
+
+---
+
+## 🔗 Data Sources & Attribution
+
+Primary Endpoints:  
+- SWPC Alerts: `https://services.swpc.noaa.gov/products/alerts.json`  
+- GOES X‑ray (1‑day): `https://services.swpc.noaa.gov/json/goes/primary/xrays-1-day.json`  
+- Solar wind (mag): `https://services.swpc.noaa.gov/products/solar-wind/mag-1-day.json`  
+- Solar wind (plasma): `https://services.swpc.noaa.gov/products/solar-wind/plasma-1-day.json`  
+- Kp 3‑day forecast: `https://services.swpc.noaa.gov/products/3-day-forecast.json`  
+- Aurora map (NH): `https://services.swpc.noaa.gov/images/aurora-forecast-northern-hemisphere.png`  
+- Aurora map (SH): `https://services.swpc.noaa.gov/images/aurora-forecast-southern-hemisphere.png`  
+- Sun images: `https://services.swpc.noaa.gov/images/suvi/suvi-latest-195.jpg`, `https://services.swpc.noaa.gov/images/sxi/sxi-latest.jpg`
+
+NASA DONKI (requires api.nasa.gov key):  
+- Flares (FLR): `https://api.nasa.gov/DONKI/FLR?...`  
+- CME: `https://api.nasa.gov/DONKI/CME?...`  
+- CME Analysis: `https://api.nasa.gov/DONKI/CMEAnalysis?...`  
+- Geomagnetic storms (GST): `https://api.nasa.gov/DONKI/GST?...`  
+- Solar energetic particles (SEP): `https://api.nasa.gov/DONKI/SEP?...`  
+- Notifications: `https://api.nasa.gov/DONKI/notifications?...`
+
+NASA Images & APOD:  
+- Images API: `https://images-api.nasa.gov/search?q=aurora&media_type=image`  
+- APOD: `https://api.nasa.gov/planetary/apod?api_key=YOUR_KEY`
+
+---
+
+## ⚙️ Setup & Development
+
+Requirements: Node.js 18+, npm 9+  
+Install & Run:  
+`npm install`  
+`npm run dev`  
+Open → `http://localhost:5173`
+
+Build:  
+`npm run build`  
+`npm run preview`
+
+Configuration (.env):  
+`VITE_NASA_API_KEY=provided_by_nasa_spaceapps`
+
+---
+
+## 🔒 Caching
+
+- Service Worker caches static assets  
+- API responses cached with simple TTL strategies  
+- Fallback images/text when APIs fail
+
+---
+
+## 🧩 Accessibility
+
+- High contrast, kid‑friendly fonts  
+- Large touch targets  
+- Short sentences paired with visuals
+
+---
+
+## 👥 Team Nomads
+
+- Al Amin — Team Lead & Vision Strategist  
+- Sayed Ajlan Al Alif — System Designer & Experience Architect  
+- Mehrab Hossain — Developer & Creative Technologist  
+- Ebrahim Hossain — Researcher, Data Integration  
+- Fardin Hossain — Researcher, Story Content & Outreach  
+- Shakera Ema — Researcher, Space Weather Impacts
+
+---
+
+## 🖼️ App Interface Gallery
+
+Below are key screens of the app interface (from `public/app_interface/`):
+
+![App Interface 1](public/app_interface/1.png)
+
+![App Interface 2](public/app_interface/2.png)
+
+![App Interface 3](public/app_interface/3.png)
+
+![App Interface 4](public/app_interface/4.png)
+
+![App Interface 5](public/app_interface/5.png)
+
+---
+
+## 📌 Notable Components
+
+- `VisualGallery.jsx` — NASA imagery with fallback explanations  
+- `AlertsTicker.jsx` — Live space weather alerts  
+- `ImpactStoryPanels.jsx` — Role‑based interactive stories  
+- Games (React‑based) — Kid‑oriented learning experiences
+
+---
+
+## 📜 License & Credits
+
+- MIT License (see `LICENSE`)  
+- Media & Data: © NASA, NOAA (public usage guidelines)
+
+---
+
