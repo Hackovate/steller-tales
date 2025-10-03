@@ -2,13 +2,12 @@
 
 > **An engaging digital children's story app that explains space weather using real-time NASA and NOAA data with friendly visuals and interactive learning experiences.**
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![React](https://img.shields.io/badge/React-19.1.1-61DAFB?logo=react)
 ![Vite](https://img.shields.io/badge/Vite-7.1.7-646CFF?logo=vite)
 ![Tailwind](https://img.shields.io/badge/Tailwind-3.4.0-38B2AC?logo=tailwind-css)
 
-**🌐 [Live Demo](https://steller-tales.vercel.app)**
+**🌐 [Live Demo](https://steller-tales.vercel.app)** · **[Project Documentation (App Interface)](./Documentation.md#-app-interface-gallery)**
 
 ### Table of Contents
 - [Overview](#-overview)
