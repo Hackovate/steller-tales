@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import StarsBackground from '../components/StarsBackground';
 import GameCard from '../components/GameCard';
 import QuizModal from '../components/QuizModal';
+import QuizCompletionModal from '../components/QuizCompletionModal';
 import VisualGallery from '../components/VisualGallery';
 import ShieldTheGrid from '../components/ShieldTheGrid';
 import SolarParticleShooter from '../components/SolarParticleShooter';
@@ -13,6 +14,8 @@ const GamesPage = () => {
   const [gameActive, setGameActive] = useState(false);
   const [quizLevel, setQuizLevel] = useState('basic');
   const [unlocked, setUnlocked] = useState({ basic: true, intermediate: false, advanced: false });
+  const [quizCompletion, setQuizCompletion] = useState(null);
+  const [quizKey, setQuizKey] = useState(0); // Key to force quiz remount
   const { t } = useLanguage();
 
   React.useEffect(() => {
@@ -85,6 +88,38 @@ const GamesPage = () => {
     setSelectedGame(null);
     setGameActive(false);
     setGameScore(0);
+    setQuizCompletion(null);
+  };
+
+  const handleQuizCompletion = ({ level, score, total }) => {
+    const ratio = total ? (score/total) : 0;
+    if (ratio >= 0.8) {
+      if (level === 'basic' && !unlocked.intermediate) saveProgress({ intermediate: true });
+      if (level === 'intermediate' && !unlocked.advanced) saveProgress({ advanced: true });
+    }
+    setQuizCompletion({ level, score, total });
+  };
+
+  const handleRetakeQuiz = () => {
+    setQuizCompletion(null);
+    setQuizKey(prev => prev + 1); // Force quiz remount
+    // Quiz will restart automatically
+  };
+
+  const handleNextLevel = () => {
+    const levels = ['basic', 'intermediate', 'advanced'];
+    const currentIndex = levels.indexOf(quizCompletion.level);
+    const nextLevel = levels[currentIndex + 1];
+    
+    if (nextLevel && unlocked[nextLevel]) {
+      setQuizLevel(nextLevel);
+      setQuizCompletion(null);
+      setQuizKey(prev => prev + 1); // Force quiz remount
+      setGameActive('quiz');
+    } else {
+      // No next level available
+      setQuizCompletion(null);
+    }
   };
 
   const simulateGameplay = React.useCallback(() => {
@@ -238,7 +273,7 @@ const GamesPage = () => {
                     })}
                   </div>
                   <div className="text-xs text-text-gray">{t('answerEightyToUnlock')}</div>
-                  <button disabled={quizLevel!=='basic' && !unlocked[quizLevel]} onClick={() => setGameActive('quiz')} className={`bg-gradient-to-r from-accent-purple to-accent-blue text-white px-6 py-3 rounded-lg font-bold transition-all duration-300 shadow-lg ${quizLevel!=='basic' && !unlocked[quizLevel] ? 'opacity-60 cursor-not-allowed' : 'hover:from-accent-purple/90 hover:to-accent-blue/90 hover:scale-[1.02]'}`}>
+                  <button disabled={quizLevel!=='basic' && !unlocked[quizLevel]} onClick={() => { setGameActive('quiz'); setQuizKey(prev => prev + 1); }} className={`bg-gradient-to-r from-accent-purple to-accent-blue text-white px-6 py-3 rounded-lg font-bold transition-all duration-300 shadow-lg ${quizLevel!=='basic' && !unlocked[quizLevel] ? 'opacity-60 cursor-not-allowed' : 'hover:from-accent-purple/90 hover:to-accent-blue/90 hover:scale-[1.02]'}`}>
                     {t('startLevelQuiz', { level: quizLevel.charAt(0).toUpperCase()+quizLevel.slice(1) })}
                   </button>
                 </div>
@@ -248,13 +283,33 @@ const GamesPage = () => {
         </div>
       )}
       {gameActive === 'quiz' && (
-        <QuizModal level={quizLevel} count={12} onComplete={({ level, score, total }) => {
-          const ratio = total ? (score/total) : 0;
-          if (ratio >= 0.8) {
-            if (level === 'basic' && !unlocked.intermediate) saveProgress({ intermediate: true });
-            if (level === 'intermediate' && !unlocked.advanced) saveProgress({ advanced: true });
-          }
-        }} onClose={() => { setGameActive(false); setSelectedGame(null); }} />
+        <QuizModal 
+          key={quizKey}
+          level={quizLevel} 
+          count={12} 
+          onComplete={handleQuizCompletion}
+          onShowCompletion={handleQuizCompletion}
+          onClose={() => { setGameActive(false); setSelectedGame(null); }} 
+        />
+      )}
+      
+      {/* Quiz Completion Modal */}
+      {quizCompletion && (
+        <QuizCompletionModal
+          isOpen={!!quizCompletion}
+          onClose={closeGameModal}
+          score={quizCompletion.score}
+          total={quizCompletion.total}
+          level={quizCompletion.level}
+          onRetake={handleRetakeQuiz}
+          onNextLevel={handleNextLevel}
+          hasNextLevel={(() => {
+            const levels = ['basic', 'intermediate', 'advanced'];
+            const currentIndex = levels.indexOf(quizCompletion.level);
+            const nextLevel = levels[currentIndex + 1];
+            return nextLevel && unlocked[nextLevel];
+          })()}
+        />
       )}
       {gameActive === 'visual-gallery' && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">

@@ -1,9 +1,16 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import LoadingSpinner from './LoadingSpinner';
-import { useApp } from '../context/AppContext';
+import { AppContext } from '../context/AppContext';
 
 const GlobalLoader = () => {
-  const { isLoading, isSuspenseLoading } = useApp();
+  const context = useContext(AppContext);
+  
+  // If context is not available (e.g., during HMR), don't render anything
+  if (!context) {
+    return null;
+  }
+
+  const { isLoading, isSuspenseLoading } = context;
 
   if (!isLoading && !isSuspenseLoading) return null;
 

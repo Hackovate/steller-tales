@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { spaceWeatherTrivia, getRandomTrivia } from '../data/spaceWeatherTrivia';
 import { nasaAPI } from '../utils/nasaAPI';
 
-const AppContext = createContext();
+export const AppContext = createContext();
 
 export const useApp = () => {
   const context = useContext(AppContext);

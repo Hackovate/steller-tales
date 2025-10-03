@@ -1,8 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { generateQuizSession } from '../data/spaceWeatherQuiz';
+import QuizCompletionModal from './QuizCompletionModal';
 
-const QuizModal = ({ onClose, level = 'basic', count = 12, onComplete }) => {
+const QuizModal = ({ onClose, level = 'basic', count = 12, onComplete, onShowCompletion }) => {
   const { t } = useLanguage();
   const [questions] = useState(() => {
     const qs = generateQuizSession(level, count);
@@ -41,8 +42,9 @@ const QuizModal = ({ onClose, level = 'basic', count = 12, onComplete }) => {
       setAnswered(null);
       return;
     }
+    // Quiz completed - show completion modal instead of closing
     onComplete && onComplete({ level, score, total });
-    onClose && onClose();
+    onShowCompletion && onShowCompletion({ level, score, total });
   };
 
   return (

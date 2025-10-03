@@ -44,8 +44,8 @@ function App() {
             future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
           >
             <div className="App">
-                  <GlobalLoader />
-                  <PWAInstallButton />
+              <GlobalLoader />
+              <PWAInstallButton />
               <Suspense fallback={<SuspenseFallback />}>
                 <Routes>
                   <Route path="/" element={<HomePage />} />

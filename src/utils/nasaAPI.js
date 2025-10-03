@@ -82,12 +82,12 @@ export class NASASpaceWeatherAPI {
   // Get cache duration based on content type
   getCacheDuration(type) {
     const durations = {
-      'dashboard': 5, // 5 minutes for dashboard data
+      'dashboard': 10, // 10 minutes for dashboard data
       'visual': 60, // 60 minutes for visual content
       'pages': 60, // 60 minutes for other pages
-      'api': 10 // 10 minutes for general API calls
+      'api': 15 // 15 minutes for general API calls
     };
-    return durations[type] || 10;
+    return durations[type] || 15;
   }
 
   // Helper method to parse and validate dates
@@ -157,7 +157,8 @@ export class NASASpaceWeatherAPI {
       const start = startDate || new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
       const end = endDate || new Date().toISOString().split('T')[0];
       const url = `${DONKI_BASE}/GST?startDate=${start}&endDate=${end}&api_key=${this.apiKey}`;
-      const cached = this.readCache(url, 15);
+      const cacheDuration = this.getCacheDuration('dashboard');
+      const cached = this.readCache(url, cacheDuration);
       if (cached) return cached;
       const response = await fetch(url);
       
@@ -180,7 +181,8 @@ export class NASASpaceWeatherAPI {
       const start = startDate || new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
       const end = endDate || new Date().toISOString().split('T')[0];
       const url = `${DONKI_BASE}/SEP?startDate=${start}&endDate=${end}&api_key=${this.apiKey}`;
-      const cached = this.readCache(url, 15);
+      const cacheDuration = this.getCacheDuration('dashboard');
+      const cached = this.readCache(url, cacheDuration);
       if (cached) return cached;
       const response = await fetch(url);
       if (!response.ok) throw new Error('Failed to fetch SEP data');
