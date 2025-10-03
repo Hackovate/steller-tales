@@ -225,7 +225,10 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 ## 🙏 Acknowledgments
 
-- **NASA** - For providing free APIs and space weather data
+- **NASA** - For providing free APIs and space weather data:
+  - **DONKI**: **FLR** (Solar Flares), **CME** (Coronal Mass Ejections), **GST** (Geomagnetic Storms), **SEP** (Solar Energetic Particles)
+  - **APOD**: Astronomy Picture of the Day
+  - **NASA Images**: Images and Video Library
 - **NOAA SWPC** - For real-time solar wind and aurora data
 
 ---
