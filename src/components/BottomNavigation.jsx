@@ -1,6 +1,5 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { getAvailableStoriesCount } from '../data/stories';
 import { useLanguage } from '../context/LanguageContext';
 
 const BottomNavigation = () => {
@@ -8,12 +7,9 @@ const BottomNavigation = () => {
   const location = useLocation();
   const { t } = useLanguage();
 
-  // Get the current available stories count dynamically
-  const storiesCount = getAvailableStoriesCount();
-
   const navItems = [
     { path: '/', icon: '🏠', label: t('home'), badge: null },
-    { path: '/stories', icon: '📚', label: t('stories'), badge: storiesCount > 0 ? String(storiesCount) : null },
+    { path: '/stories', icon: '📚', label: t('stories'), badge: null },
     { path: '/wiki', icon: '📖', label: t('wiki'), badge: null },
     { path: '/games', icon: '🎮', label: t('games'), badge: null },
     { path: '/dashboard', icon: '🚀', label: t('dashboard'), badge: null }
