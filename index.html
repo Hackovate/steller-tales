@@ -23,6 +23,26 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      (function () {
+        try {
+          var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || null;
+          var isReload = nav ? nav.type === 'reload' : (performance && performance.navigation ? performance.navigation.type === 1 : false);
+          var path = location.pathname;
+          var looksLikeFile = /\.[a-zA-Z0-9]+$/.test(path);
+          if (isReload && path !== '/' && !looksLikeFile) {
+            sessionStorage.setItem('redirectPath', path + location.search + location.hash);
+            location.replace('/');
+            return;
+          }
+          var to = sessionStorage.getItem('redirectPath');
+          if (to) {
+            sessionStorage.removeItem('redirectPath');
+            history.replaceState(null, '', to);
+          }
+        } catch (e) {}
+      })();
+    </script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

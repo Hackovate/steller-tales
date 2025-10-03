@@ -9,7 +9,11 @@
       }
     }
   ],
-  "routes": [],
+  "routes": [
+    { "handle": "filesystem" },
+    { "src": "/favicon.ico", "dest": "/logo.svg" },
+    { "src": "/.*", "dest": "/index.html" }
+  ],
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ],
