@@ -15,8 +15,11 @@ const GlobalLoader = () => {
   if (!isLoading && !isSuspenseLoading) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] bg-black/40 backdrop-blur-sm flex items-center justify-center">
+    <div className="fixed inset-0 z-[100] bg-black/40 backdrop-blur-sm flex flex-col items-center justify-center gap-4">
       <LoadingSpinner size="lg" color="#FACC15" speed={2} />
+      <div className="text-accent-yellow font-medium text-lg animate-pulse">
+        Caching data...
+      </div>
     </div>
   );
 };
