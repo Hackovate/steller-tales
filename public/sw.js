@@ -1,8 +1,8 @@
-const APP_CACHE = 'stellar-tales-app-v10';
-const STATIC_CACHE = 'stellar-tales-static-v10';
-const MEDIA_CACHE = 'stellar-tales-media-v10';
-const DATA_CACHE = 'stellar-tales-data-v10';
-const API_CACHE = 'stellar-tales-api-v10';
+const APP_CACHE = 'stellar-tales-app-v11';
+const STATIC_CACHE = 'stellar-tales-static-v11';
+const MEDIA_CACHE = 'stellar-tales-media-v11';
+const DATA_CACHE = 'stellar-tales-data-v11';
+const API_CACHE = 'stellar-tales-api-v11';
 
 // Core shell assets to cache immediately
 const STATIC_ASSETS = [
@@ -26,6 +26,7 @@ const WIKI_ASSETS = [
   '/wiki/nasa_studies/nasastudies2.webp',
   '/wiki/nasa_studies/nasa-studies3.jpg',
   '/wiki/spaceweather_mission/hermes.webp',
+  '/wiki/spaceweather_mission/helio-fleet.webp',
   '/wiki/spaceweather_mission/vigil.webp',
   '/wiki/spaceweather_mission/high_precision_pointing_cubesat.webp',
   '/wiki/cme/749832main_cme-graphic_full.webp',
@@ -96,6 +97,16 @@ const API_ENDPOINTS = [
 self.addEventListener('install', (event) => {
   event.waitUntil(
     Promise.all([
+      // Clear old caches first
+      caches.keys().then(cacheNames => {
+        return Promise.all(
+          cacheNames.map(cacheName => {
+            if (cacheName.startsWith('stellar-tales-') && !cacheName.includes('v11')) {
+              return caches.delete(cacheName);
+            }
+          })
+        );
+      }),
       // Cache core app shell
       caches.open(APP_CACHE).then((cache) => 
         cache.addAll(STATIC_ASSETS).catch(() => {})
@@ -292,11 +303,35 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // JavaScript and CSS files - cache with updates
+  // JavaScript and CSS files - network first for modules, cache for others
   if (request.destination === 'script' || 
       request.destination === 'style' ||
       request.url.includes('.css') ||
       request.url.includes('.js')) {
+    
+    // For JavaScript modules, always try network first to avoid MIME type issues
+    if (request.url.includes('.js') && (request.url.includes('index-') || request.url.includes('utils-') || request.url.includes('dashboard-') || request.url.includes('stories-'))) {
+      event.respondWith(
+        fetch(request).then(response => {
+          if (response.ok) {
+            // Only cache if it's actually a JavaScript file
+            if (response.headers.get('content-type')?.includes('javascript') || response.url.endsWith('.js')) {
+              caches.open(STATIC_CACHE).then(cache => {
+                cache.put(request, addCacheTimestamp(response.clone()));
+              });
+            }
+            return response;
+          }
+          throw new Error('Network failed');
+        }).catch(() => {
+          // Fallback to cache only if network fails
+          return caches.open(STATIC_CACHE).then(cache => cache.match(request));
+        })
+      );
+      return;
+    }
+    
+    // For other JS/CSS files, use normal caching
     event.respondWith(
       caches.open(STATIC_CACHE).then(async (cache) => {
         const cached = await cache.match(request);

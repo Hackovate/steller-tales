@@ -90,7 +90,7 @@ export const wikiEntries = [
     title: "Space Weather Program Missions",
     category: "Space Weather",
     description: "HERMES and Vigil missions advancing space weather research and forecasting capabilities.",
-    image: "/wiki/spaceweather_mission/hermes.webp",
+    image: "/wiki/spaceweather_mission/helio-fleet.webp",
     imageCredit: "NASA",
     imageCreditUrl: "https://science.nasa.gov/sun/solar-storms-and-flares/",
     sections: [
