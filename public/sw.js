@@ -1,8 +1,8 @@
-const APP_CACHE = 'stellar-tales-app-v11';
-const STATIC_CACHE = 'stellar-tales-static-v11';
-const MEDIA_CACHE = 'stellar-tales-media-v11';
-const DATA_CACHE = 'stellar-tales-data-v11';
-const API_CACHE = 'stellar-tales-api-v11';
+const APP_CACHE = 'stellar-tales-app-v12';
+const STATIC_CACHE = 'stellar-tales-static-v12';
+const MEDIA_CACHE = 'stellar-tales-media-v12';
+const DATA_CACHE = 'stellar-tales-data-v12';
+const API_CACHE = 'stellar-tales-api-v12';
 
 // Core shell assets to cache immediately
 const STATIC_ASSETS = [
@@ -101,7 +101,7 @@ self.addEventListener('install', (event) => {
       caches.keys().then(cacheNames => {
         return Promise.all(
           cacheNames.map(cacheName => {
-            if (cacheName.startsWith('stellar-tales-') && !cacheName.includes('v11')) {
+            if (cacheName.startsWith('stellar-tales-') && !cacheName.includes('v12')) {
               return caches.delete(cacheName);
             }
           })
@@ -203,22 +203,26 @@ self.addEventListener('fetch', (event) => {
                              request.url.includes('solar-wind') ? 
                              CACHE_DURATIONS.API : CACHE_DURATIONS.DATA;
         
-        // Return cached if valid
-        if (cached && isCacheValid(cached, cacheDuration)) {
-          return cached;
-        }
-        
-        try {
-          const networkResponse = await fetch(request);
+        // For fresh data, try network first
+        const networkPromise = fetch(request).then(networkResponse => {
           if (networkResponse.ok && networkResponse.status === 200) {
             const responseWithTimestamp = addCacheTimestamp(networkResponse);
             cache.put(request, responseWithTimestamp.clone());
             return responseWithTimestamp;
           }
-          return cached || networkResponse;
-        } catch {
-          return cached || new Response('API unavailable offline', { status: 503 });
+          throw new Error('API response not ok');
+        }).catch(() => null);
+        
+        // Return cached immediately if valid, otherwise wait for network
+        if (cached && isCacheValid(cached, cacheDuration)) {
+          // Update cache in background for next time
+          networkPromise.catch(() => {});
+          return cached;
         }
+        
+        // Wait for network or return stale cache
+        const networkResponse = await networkPromise;
+        return networkResponse || cached || new Response('API unavailable offline', { status: 503 });
       })
     );
     return;
@@ -229,29 +233,23 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Navigation requests - serve from cache with 60min duration
+  // Navigation requests - network first with short cache for SPA
   if (isNavigationRequest(request)) {
     event.respondWith(
-      caches.open(APP_CACHE).then(async (cache) => {
-        const cached = await cache.match(request);
-        
-        if (cached && isCacheValid(cached, CACHE_DURATIONS.PAGES)) {
-          return cached;
+      fetch(request, { cache: 'no-store' }).then(networkResponse => {
+        if (networkResponse.ok) {
+          // Cache for offline use but don't add timestamp for HTML
+          caches.open(APP_CACHE).then(cache => {
+            cache.put(request, networkResponse.clone());
+          });
+          return networkResponse;
         }
-
-        try {
-          const networkResponse = await fetch(request);
-          if (networkResponse.ok) {
-            const responseWithTimestamp = addCacheTimestamp(networkResponse);
-            cache.put(request, responseWithTimestamp.clone());
-            return responseWithTimestamp;
-          }
-          // If server returns 404/500 for SPA deep links, fall back to index.html
-          const fallback = await caches.match('/index.html');
-          return fallback || cached || new Response('Network error', { status: 503 });
-        } catch {
-          return cached || caches.match('/index.html');
-        }
+        // If server returns 404/500 for SPA deep links, fall back to index.html
+        return caches.match('/index.html');
+      }).catch(async () => {
+        // Offline - use cache
+        const cached = await caches.match(request);
+        return cached || caches.match('/index.html');
       })
     );
     return;
@@ -303,52 +301,34 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // JavaScript and CSS files - network first for modules, cache for others
+  // JavaScript and CSS files - ALWAYS network first to prevent MIME type issues
   if (request.destination === 'script' || 
       request.destination === 'style' ||
       request.url.includes('.css') ||
       request.url.includes('.js')) {
     
-    // For JavaScript modules, always try network first to avoid MIME type issues
-    if (request.url.includes('.js') && (request.url.includes('index-') || request.url.includes('utils-') || request.url.includes('dashboard-') || request.url.includes('stories-'))) {
-      event.respondWith(
-        fetch(request).then(response => {
-          if (response.ok) {
-            // Only cache if it's actually a JavaScript file
-            if (response.headers.get('content-type')?.includes('javascript') || response.url.endsWith('.js')) {
-              caches.open(STATIC_CACHE).then(cache => {
-                cache.put(request, addCacheTimestamp(response.clone()));
-              });
-            }
-            return response;
-          }
-          throw new Error('Network failed');
-        }).catch(() => {
-          // Fallback to cache only if network fails
-          return caches.open(STATIC_CACHE).then(cache => cache.match(request));
-        })
-      );
-      return;
-    }
-    
-    // For other JS/CSS files, use normal caching
     event.respondWith(
-      caches.open(STATIC_CACHE).then(async (cache) => {
-        const cached = await cache.match(request);
-        
-        try {
-          const networkResponse = await fetch(request);
-          if (networkResponse.ok) {
-            const responseWithTimestamp = addCacheTimestamp(networkResponse);
-            cache.put(request, responseWithTimestamp.clone());
-            return responseWithTimestamp;
+      fetch(request).then(response => {
+        // Only cache valid JavaScript/CSS responses
+        if (response.ok && response.status === 200) {
+          const contentType = response.headers.get('content-type') || '';
+          const isValidJS = contentType.includes('javascript') || contentType.includes('ecmascript');
+          const isValidCSS = contentType.includes('css');
+          
+          // Only cache if MIME type matches the request
+          if ((request.url.endsWith('.js') && isValidJS) || 
+              (request.url.endsWith('.css') && isValidCSS)) {
+            caches.open(STATIC_CACHE).then(cache => {
+              cache.put(request, response.clone());
+            });
           }
-          return cached || networkResponse;
-        } catch {
-          // Offline - return cached version
-          if (cached) return cached;
-          throw new Error('Offline and not cached');
         }
+        return response;
+      }).catch(async () => {
+        // Only use cache as fallback when completely offline
+        const cached = await caches.match(request);
+        if (cached) return cached;
+        throw new Error('Offline and not cached');
       })
     );
     return;

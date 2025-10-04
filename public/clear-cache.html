@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clear Cache - Stellar Tales</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 40px;
+      max-width: 500px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    h1 {
+      margin: 0 0 20px;
+      font-size: 28px;
+    }
+    .status {
+      margin: 20px 0;
+      padding: 15px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.05);
+    }
+    button {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      margin: 10px;
+      transition: transform 0.2s;
+    }
+    button:hover {
+      transform: scale(1.05);
+    }
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .success {
+      color: #4ade80;
+    }
+    .error {
+      color: #f87171;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🧹 Clear App Cache</h1>
+    <p>If you're experiencing loading issues, click below to clear the app cache.</p>
+    
+    <div class="status" id="status">
+      Ready to clear cache
+    </div>
+    
+    <button onclick="clearAllCaches()" id="clearBtn">Clear Cache & Reload</button>
+    <button onclick="goHome()">Go to Home</button>
+  </div>
+
+  <script>
+    async function clearAllCaches() {
+      const statusEl = document.getElementById('status');
+      const btn = document.getElementById('clearBtn');
+      
+      try {
+        btn.disabled = true;
+        statusEl.textContent = 'Clearing caches...';
+        
+        // Unregister service workers
+        if ('serviceWorker' in navigator) {
+          const registrations = await navigator.serviceWorker.getRegistrations();
+          for (const registration of registrations) {
+            await registration.unregister();
+          }
+          statusEl.textContent = 'Service workers unregistered...';
+        }
+        
+        // Clear all caches
+        const cacheNames = await caches.keys();
+        await Promise.all(cacheNames.map(name => caches.delete(name)));
+        
+        statusEl.innerHTML = '<span class="success">✅ Cache cleared successfully!</span>';
+        statusEl.innerHTML += '<br><br>Reloading in 2 seconds...';
+        
+        // Reload after 2 seconds
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 2000);
+        
+      } catch (error) {
+        statusEl.innerHTML = `<span class="error">❌ Error: ${error.message}</span>`;
+        btn.disabled = false;
+      }
+    }
+    
+    function goHome() {
+      window.location.href = '/';
+    }
+  </script>
+</body>
+</html>
