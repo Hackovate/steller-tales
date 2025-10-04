@@ -82,7 +82,7 @@ We built a cross‑platform PWA that turns real space weather data into kid‑fr
 2) Home → Trivia, highlights, Today at a Glance with historical comparisons, navigation to Stories, Dashboard, Wiki, Games  
 3) Stories → Profession‑based narratives with visuals and impacts  
 4) Dashboard → Live alerts, solar wind indicators, interactive aurora forecast game with hotspots, historical aurora events timeline  
-5) Wiki → Solar phenomena, celestial events, NASA missions, 110+ interactive quizzes  
+5) Wiki → Solar phenomena, celestial events, NASA missions, 150+ interactive quizzes  
 6) Games → Aurora Forecast, Particle Shooter (with BGM), Shield the Grid, comprehensive quiz system
 
 ---
@@ -182,7 +182,7 @@ Configuration (.env):
 ## 🔒 Caching & Offline Support
 
 - **Service Worker v8** with smart caching (excludes HTTP 206 responses)
-- **Cache Strategy**: Static (7 days), Media (30 days), API Data (60 minutes)
+- **Cache Strategy**: Static (7 days), Media (30 days), API Data (180 minutes)
 - **Full Offline Mode**: All stories, wikis, games, and quizzes work without internet
 - **Offline Detection**: User-friendly error messages and fallback content
 
