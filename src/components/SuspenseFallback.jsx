@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
 import { useApp } from '../context/AppContext';
+import LoadingSpinner from './LoadingSpinner';
 
-// Lightweight fallback that only toggles the suspense loading flag.
+// Fallback shown during lazy route loading
 const SuspenseFallback = () => {
   const { setIsSuspenseLoading } = useApp();
 
@@ -10,8 +11,15 @@ const SuspenseFallback = () => {
     return () => setIsSuspenseLoading(false);
   }, [setIsSuspenseLoading]);
 
-  // Render nothing; GlobalLoader will show the single centered Pacman
-  return null;
+  // Show inline loader for immediate feedback
+  return (
+    <div className="min-h-screen bg-space-bg flex flex-col items-center justify-center">
+      <LoadingSpinner size="lg" color="#FACC15" speed={2} />
+      <div className="text-accent-yellow font-medium text-lg animate-pulse mt-4">
+        Loading page...
+      </div>
+    </div>
+  );
 };
 
 export default SuspenseFallback;
