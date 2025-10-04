@@ -309,6 +309,9 @@ self.addEventListener('fetch', (event) => {
     
     event.respondWith(
       fetch(request).then(response => {
+        // Clone response FIRST before reading it
+        const responseToCache = response.clone();
+        
         // Only cache valid JavaScript/CSS responses
         if (response.ok && response.status === 200) {
           const contentType = response.headers.get('content-type') || '';
@@ -319,7 +322,7 @@ self.addEventListener('fetch', (event) => {
           if ((request.url.endsWith('.js') && isValidJS) || 
               (request.url.endsWith('.css') && isValidCSS)) {
             caches.open(STATIC_CACHE).then(cache => {
-              cache.put(request, response.clone());
+              cache.put(request, responseToCache);
             });
           }
         }
